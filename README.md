@@ -1,8 +1,21 @@
 # MenuQ — Restaurante digital premium (proyecto demo)
 
 Sistema completo para un restaurante (demo: "El Buen Sabor") en 3 piezas,
-con **experiencia 3D interactiva** (hero 3D + menú 3D rotable hecho con
-Three.js / React Three Fiber). Ver `ROADMAP.md` para el plan completo.
+con **experiencia 3D interactiva** (hero 3D + menú 3D rotable con modelos
+PBR creados por código, hecho con Three.js / React Three Fiber).
+Ver `ROADMAP.md` para el plan completo.
+
+## 🌍 En línea (demo pública)
+
+| App         | URL                                            |
+| ----------- | ---------------------------------------------- |
+| Landing     | https://menuq-landing.vercel.app               |
+| Panel admin | https://menuq-admin.vercel.app (login demo)    |
+| App pedidos | https://menuq-app-mobile.vercel.app            |
+
+> Los QR del panel usan `https://menuq-app-mobile.vercel.app/mesa/N`
+> (el QR apunta a la app web; en el celular, en la pestaña "Mesas", el QR
+> usa el esquema `menuq://` para la app nativa).
 
 | Carpeta     | Qué es                                                                                     |
 | ----------- | ------------------------------------------------------------------------------------------ |

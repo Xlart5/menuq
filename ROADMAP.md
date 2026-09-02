@@ -41,11 +41,13 @@ Objetivo: experiencia de lujo que el cliente diga "esto lo quiero".
 
 ## · Fase 4 — Despliegue profesional
 
-- GitHub: repo remoto + GitHub Actions (lint/buils automáticos en cada push)
-- Vercel: landing + admin + web de la app (los 3 en 1 account o 3 proyectos)
-- Expo EAS: builds de Android/iOS para tienda (Play Store / App Store)
-- Dominio propio (ej. elbuensabor.com) para el QR real de producción
-- Supabase en producción + backups + monitoreo (uptime)
+- [x] Vercel: landing + admin + web de la app desplegados en producción
+      (menuq-landing / menuq-admin / menuq-app-mobile .vercel.app)
+- [ ] GitHub: repo remoto + GitHub Actions (lint/builds automáticos en cada push)
+- [ ] Recomendar Vercel: autorizar "vercel integration" para auto-deploy desde Git
+- [ ] Expo EAS: builds de Android/iOS para tienda (Play Store / App Store)
+- [ ] Dominio propio (ej. elbuensabor.com) para el QR real de producción
+- [ ] Supabase en producción + backups + monitoreo (uptime)
 
 ## · Fase 5 — Seguridad y pulido
 

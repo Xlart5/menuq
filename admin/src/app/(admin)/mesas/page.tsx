@@ -12,7 +12,7 @@ export default function MesasPage() {
   const [qrUrl, setQrUrl] = useState<string>("");
   const [baseUrl, setBaseUrl] = useStorageString(
     "menuq-base-url",
-    "http://localhost:8081"
+    "https://menuq-app-mobile.vercel.app"
   );
 
   useEffect(() => {
