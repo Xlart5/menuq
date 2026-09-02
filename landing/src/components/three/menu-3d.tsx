@@ -60,7 +60,7 @@ export function Menu3D() {
       </div>
 
       <div className="h-[380px] rounded-[2.5rem] border border-white/10 bg-zinc-900/40 lg:col-span-3">
-        <ShowcaseScene emoji={selected.emoji} />
+        <ShowcaseScene dishId={selected.id} />
       </div>
     </div>
   );

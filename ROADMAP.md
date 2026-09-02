@@ -17,10 +17,15 @@ Objetivo: experiencia de lujo que el cliente diga "esto lo quiero".
 - [x] Hero 3D interactivo (Three.js + React Three Fiber + drei): plato en pedestal
       dorado, rotación automática, órbita con arrastre, partículas doradas.
 - [x] Sección "Menú 3D interactivo": selectores de plato con vista 3D rotable.
-- [ ] Cargar modelo 3D real (GLTF) por plato reemplazando el sprite (1 modelo de
-      muestra: plato de comida estilizado hecho a medida o con Asset Library).
-- [ ] Materiales premium: PBR (acuñado metal/porcelana), iluminación HDR,
-      sombreado suave (ContrastShadows ya), bloom post-procesamiento.
+- [x] Modelos 3D procedurales (PBR) para los 12 platos: burgers con sésamo,
+      pizza con pepperoni/basílico, costillas en plato, lomo saltado, nachos,
+      porciones de torta/cheesecake, bebidas con hielo y pajilla, palitos.
+      Sin dependencias externas ni licencias (todo generado en código).
+- [x] Materiales PBR + iluminación de ambiente generada localmente
+      (Lightformers dentro de Environment, sin descargas de red).
+- [ ] Opcional: sustituir modelos procedurales por escaneos/GLTF premium (Asset
+      Library) si el cliente tiene presupuesto para modelos escaneados.
+- [ ] Bloom post-procesamiento (postprocessing) para brillo dorado.
 - [ ] Scroll narrativo: la escena reacciona al scroll de la landing.
 - [ ] Clientes primerizos: reducir bundle 3D (lazy + code split ya hecho).
 - [ ] 3D en la app móvil (React Three Fiber + expo-gl) para el detalle del plato.

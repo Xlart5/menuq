@@ -5,7 +5,7 @@ import { ContactShadows, OrbitControls, Sparkles } from "@react-three/drei";
 
 import { DishPedestal } from "./dish-pedestal";
 
-export default function ShowcaseScene({ emoji }: { emoji: string }) {
+export default function ShowcaseScene({ dishId }: { dishId: string }) {
   return (
     <Canvas
       dpr={[1, 2]}
@@ -16,8 +16,8 @@ export default function ShowcaseScene({ emoji }: { emoji: string }) {
       <ambientLight intensity={0.35} />
       <pointLight position={[3, 5, 4]} intensity={55} color="#f6c95c" decay={1.6} />
       <pointLight position={[-4, 2, -3]} intensity={25} color="#ffffff" decay={1.8} />
-      <group key={emoji}>
-        <DishPedestal emoji={emoji} size={2.1} />
+      <group key={dishId}>
+        <DishPedestal id={dishId} scale={0.95} />
       </group>
       <Sparkles
         count={45}
