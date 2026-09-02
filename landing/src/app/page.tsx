@@ -1,3 +1,5 @@
+import { Hero3D } from "@/components/three/hero-3d";
+import { Menu3D } from "@/components/three/menu-3d";
 import {
   categories,
   featuredDishes,
@@ -15,6 +17,7 @@ export default function Home() {
       <Hero />
       <About />
       <MenuSection />
+      <Menu3DSection />
       <Gallery />
       <Reviews />
       <Contact />
@@ -89,43 +92,9 @@ function Hero() {
             🕐 {restaurant.hours} · 📍 {restaurant.address}
           </p>
         </div>
-        <HeroCard />
+        <Hero3D />
       </div>
     </section>
-  );
-}
-
-function HeroCard() {
-  return (
-    <div className="relative mx-auto w-full max-w-sm">
-      <div className="absolute -inset-8 rounded-[3rem] bg-amber-500/20 blur-3xl" />
-      <div className="relative rounded-[2.5rem] border border-white/15 bg-zinc-900 p-8 shadow-2xl">
-        <div className="rounded-3xl bg-gradient-to-br from-amber-500/25 to-orange-600/10 p-12 text-center">
-          <span className="text-8xl">🥘</span>
-        </div>
-        <div className="mt-6 text-center">
-          <p className="text-xs uppercase tracking-widest text-amber-400">
-            Plato de la casa
-          </p>
-          <h3 className="mt-1 text-xl font-black">Costillas BBQ al carbón</h3>
-          <p className="mt-2 text-sm text-zinc-400">
-            12h de cocción a fuego lento, glaseado de miel y pimienta ahumada.
-          </p>
-          <p className="mt-3 text-2xl font-black text-amber-400">$16.90</p>
-        </div>
-        <div className="mt-6 flex justify-center gap-3">
-          <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-zinc-300">
-            ⭐ 4.8
-          </span>
-          <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-zinc-300">
-            🚀 Pedido por QR
-          </span>
-          <span className="rounded-full bg-white/5 px-3 py-1 text-xs text-zinc-300">
-            🔥 +1.2k vendidos
-          </span>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -239,6 +208,14 @@ function MenuSection() {
           📱 El menú completo se abre en tu celular al escanear el QR de tu mesa
         </p>
       </div>
+    </section>
+  );
+}
+
+function Menu3DSection() {
+  return (
+    <section id="menu-3d" className="mx-auto max-w-6xl px-4 py-20">
+      <Menu3D />
     </section>
   );
 }

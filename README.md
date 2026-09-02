@@ -1,6 +1,8 @@
-# MenuQ — Restaurante digital (proyecto demo)
+# MenuQ — Restaurante digital premium (proyecto demo)
 
-Sistema completo para un restaurante (demo: "El Buen Sabor") en 3 piezas:
+Sistema completo para un restaurante (demo: "El Buen Sabor") en 3 piezas,
+con **experiencia 3D interactiva** (hero 3D + menú 3D rotable hecho con
+Three.js / React Three Fiber). Ver `ROADMAP.md` para el plan completo.
 
 | Carpeta     | Qué es                                                                                     |
 | ----------- | ------------------------------------------------------------------------------------------ |
