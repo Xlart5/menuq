@@ -20,6 +20,9 @@ export const RESTAURANT = {
   badge: "Restaurante demo",
 };
 
+export const APP_URL =
+  process.env.EXPO_PUBLIC_APP_URL ?? "https://menuq-app-mobile.vercel.app";
+
 export const categories: Category[] = [
   { id: "entradas", name: "Entradas", emoji: "🥗" },
   { id: "hamburguesas", name: "Hamburguesas", emoji: "🍔" },

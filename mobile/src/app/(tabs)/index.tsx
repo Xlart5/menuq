@@ -13,7 +13,7 @@ import QRCode from "react-native-qrcode-svg";
 
 import { Colors, Radius, Spacing } from "@/constants/theme";
 import { useMesas } from "@/context/mesas";
-import { RESTAURANT } from "@/data/menu";
+import { APP_URL, RESTAURANT } from "@/data/menu";
 
 export default function MesasScreen() {
   const router = useRouter();
@@ -78,7 +78,7 @@ export default function MesasScreen() {
             <View style={styles.qrBox}>
               {qrMesa !== null && (
                 <QRCode
-                  value={`menuq://mesa/${qrMesa}`}
+                  value={`${APP_URL}/mesa/${qrMesa}`}
                   size={200}
                   backgroundColor="#ffffff"
                   color="#111114"
@@ -87,10 +87,9 @@ export default function MesasScreen() {
             </View>
             <Text style={styles.modalHint}>
               El cliente escanea y se abre el menú de esta mesa directo en su
-              celular. (La URL usa el esquema menuq:// — en producción se
-              conecta al hosting de la app).
+              celular, sin instalar nada.
             </Text>
-            <Text style={styles.modalLink}>PRUEBA RÁPIDA → {`menuq://mesa/${qrMesa}`}</Text>
+            <Text style={styles.modalLink}>PRUEBA RÁPIDA → {`${APP_URL}/mesa/${qrMesa}`}</Text>
             <Pressable
               style={styles.modalClose}
               onPress={() => setQrMesa(null)}
