@@ -1,12 +1,12 @@
 import { Hero3D } from "@/components/three/hero-3d";
 import { Menu3D } from "@/components/three/menu-3d";
+import { ReviewsLive } from "@/components/reviews-live";
 import {
   categories,
   featuredDishes,
   formatPrice,
   gallery,
   restaurant,
-  reviews,
   stats,
 } from "@/data/restaurant";
 
@@ -267,26 +267,7 @@ function Reviews() {
         </p>
       </div>
       <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {reviews.map((r) => (
-          <figure
-            key={r.name}
-            className="rounded-3xl border border-white/10 bg-zinc-900 p-6"
-          >
-            <p className="text-amber-400">
-              {"★".repeat(r.rating)}
-              <span className="text-zinc-700">{"★".repeat(5 - r.rating)}</span>
-            </p>
-            <blockquote className="mt-3 text-sm text-zinc-300">
-              “{r.text}”
-            </blockquote>
-            <figcaption className="mt-4 flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-500/15 text-sm font-black text-amber-400">
-                {r.name.charAt(0)}
-              </span>
-              <span className="font-bold text-white">{r.name}</span>
-            </figcaption>
-          </figure>
-        ))}
+        <ReviewsLive />
       </div>
     </section>
   );

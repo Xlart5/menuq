@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import { Dish } from "@/data/menu";
+import { supabase } from "@/lib/supabase";
 
 export type PedidoEstado = "enviado" | "en_preparacion" | "entregado";
 
@@ -49,6 +50,20 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
       };
 
       setPedidos((prev) => [pedido, ...prev]);
+
+      if (supabase) {
+        supabase
+          .from("orders")
+          .insert({
+            id: pedido.id,
+            mesa: pedido.mesa,
+            items: pedido.items,
+            total: pedido.total,
+            estado: pedido.estado,
+            created_at: new Date(pedido.createdAt).toISOString(),
+          })
+          .then(() => {});
+      }
 
       setTimeout(() => {
         setPedidos((prev) =>
