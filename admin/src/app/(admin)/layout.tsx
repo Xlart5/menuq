@@ -8,10 +8,12 @@ import { clearAuth, useStorageAuth } from "@/lib/storage";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", emoji: "📊" },
+  { href: "/cocina", label: "Cocina", emoji: "🔪" },
+  { href: "/pedidos", label: "Pedidos", emoji: "🧾" },
+  { href: "/reportes", label: "Reportes", emoji: "📈" },
   { href: "/platos", label: "Platos", emoji: "🍽️" },
   { href: "/categorias", label: "Categorías", emoji: "🗂️" },
   { href: "/mesas", label: "Mesas & QR", emoji: "🪑" },
-  { href: "/pedidos", label: "Pedidos", emoji: "🧾" },
   { href: "/resenas", label: "Reseñas", emoji: "⭐" },
 ];
 

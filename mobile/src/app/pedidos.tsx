@@ -70,6 +70,11 @@ export default function PedidosScreen() {
             <Text style={styles.primaryButtonLabel}>🍽️ Ver el menú</Text>
           </Pressable>
         )}
+        {pedidos.length > 0 && (
+          <Pressable style={styles.secondaryButton} onPress={() => router.push("/resena")}>
+            <Text style={styles.secondaryButtonLabel}>⭐ Dejar una reseña</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -234,6 +239,19 @@ const styles = StyleSheet.create({
   },
   primaryButtonLabel: {
     color: "#09090b",
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  secondaryButton: {
+    marginTop: Spacing.m,
+    borderWidth: 1,
+    borderColor: Colors.accent,
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.m,
+    alignItems: "center",
+  },
+  secondaryButtonLabel: {
+    color: Colors.accent,
     fontSize: 15,
     fontWeight: "800",
   },

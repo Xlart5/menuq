@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+
 import { useAdminData } from "@/hooks/use-admin-data";
 import { formatPrice, timeAgo } from "@/lib/data";
 
@@ -10,7 +12,15 @@ const estadoLabels = {
 };
 
 export default function DashboardPage() {
-  const { data } = useAdminData();
+  const { data, reload, remote } = useAdminData();
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (!remote || started.current) return;
+    started.current = true;
+    const timer = setInterval(() => reload(), 15000);
+    return () => clearInterval(timer);
+  }, [remote, reload]);
 
   if (!data) {
     return <p className="text-zinc-500">Cargando…</p>;
@@ -37,6 +47,11 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-black">Dashboard</h1>
         <p className="text-sm text-zinc-500">
           La Estancia · Resumen del día
+          {remote && (
+            <span className="ml-2 rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-bold text-green-400">
+              ● En vivo
+            </span>
+          )}
         </p>
       </div>
 

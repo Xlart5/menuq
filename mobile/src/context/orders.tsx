@@ -1,4 +1,11 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import { Dish } from "@/data/menu";
 import { supabase } from "@/lib/supabase";
@@ -30,9 +37,55 @@ type OrdersContextValue = {
 
 const OrdersContext = createContext<OrdersContextValue | null>(null);
 
+function mapRow(o: {
+  id: string;
+  mesa: number;
+  items: PedidoItem[];
+  total: number | string;
+  estado: PedidoEstado;
+  created_at: string;
+}): Pedido {
+  return {
+    id: o.id,
+    mesa: o.mesa,
+    items: o.items ?? [],
+    total: Number(o.total),
+    estado: o.estado,
+    createdAt: new Date(o.created_at).getTime(),
+  };
+}
+
 export function OrdersProvider({ children }: { children: React.ReactNode }) {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [lastMesa, setLastMesa] = useState<number | null>(null);
+
+  // El estado real vive en la base: llegó de la cocina, lo vemos acá.
+  const sync = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(30);
+    if (error || !data) return;
+    const remote = data
+      .filter(
+        (o) =>
+          o.estado === "enviado" ||
+          o.estado === "en_preparacion" ||
+          o.estado === "entregado"
+      )
+      .map(mapRow);
+    setPedidos((prev) => {
+      const localOnly = prev.filter((p) => !remote.some((r) => r.id === p.id));
+      return [...remote, ...localOnly];
+    });
+  }, []);
+
+  useEffect(() => {
+    sync();
+    const timer = setInterval(sync, 8000);
+    return () => clearInterval(timer);
+  }, [sync]);
 
   const createPedido = useCallback(
     (mesa: number, items: { dish: Dish; qty: number }[]) => {
@@ -54,39 +107,17 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
 
       setPedidos((prev) => [pedido, ...prev]);
 
-      if (supabase) {
-        supabase
-          .from("orders")
-          .insert({
-            id: pedido.id,
-            mesa: pedido.mesa,
-            items: pedido.items,
-            total: pedido.total,
-            estado: pedido.estado,
-            created_at: new Date(pedido.createdAt).toISOString(),
-          })
-          .then(() => {});
-      }
-
-      setTimeout(() => {
-        setPedidos((prev) =>
-          prev.map((p) =>
-            p.id === pedido.id && p.estado === "enviado"
-              ? { ...p, estado: "en_preparacion" }
-              : p
-          )
-        );
-      }, 12000);
-
-      setTimeout(() => {
-        setPedidos((prev) =>
-          prev.map((p) =>
-            p.id === pedido.id && p.estado === "en_preparacion"
-              ? { ...p, estado: "entregado" }
-              : p
-          )
-        );
-      }, 35000);
+      supabase
+        .from("orders")
+        .insert({
+          id: pedido.id,
+          mesa: pedido.mesa,
+          items: pedido.items,
+          total: pedido.total,
+          estado: pedido.estado,
+          created_at: new Date(pedido.createdAt).toISOString(),
+        })
+        .then(() => {});
     },
     []
   );

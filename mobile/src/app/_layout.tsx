@@ -21,6 +21,7 @@ export default function RootLayout() {
             <Stack.Screen name="index" />
             <Stack.Screen name="mesa/[numero]" />
             <Stack.Screen name="pedidos" />
+            <Stack.Screen name="resena" />
             <Stack.Screen
               name="dish/[id]"
               options={{ presentation: "modal", animation: "slide_from_bottom" }}
