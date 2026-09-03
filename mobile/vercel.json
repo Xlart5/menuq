@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "env": {
+    "EXPO_PUBLIC_SUPABASE_URL": "https://vengiwcaizzknbnohbry.supabase.co",
+    "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbmdpd2NhaXp6a25ibm9oYnJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MDM4NzMsImV4cCI6MjEwMzk3OTg3M30.UeArvrjWyKiZ0DGBjN4MZ3DQOWKU5Y8pmp7J6M-VqZs",
+    "EXPO_PUBLIC_APP_URL": "https://menuq-app-mobile.vercel.app"
+  }
 }
