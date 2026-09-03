@@ -13,12 +13,14 @@ const meta: Record<PedidoEstado, { label: string; badge: string }> = {
     badge: "bg-sky-500/15 text-sky-400",
   },
   entregado: { label: "Entregado", badge: "bg-green-500/15 text-green-400" },
+  pagado: { label: "Pagado", badge: "bg-white/10 text-zinc-200" },
 };
 
 const next: Record<PedidoEstado, PedidoEstado> = {
   enviado: "en_preparacion",
   en_preparacion: "entregado",
   entregado: "entregado",
+  pagado: "pagado",
 };
 
 export default function CocinaPage() {
@@ -35,8 +37,21 @@ export default function CocinaPage() {
   if (!data) return <p className="text-zinc-500">Cargando…</p>;
 
   const activos = data.pedidos
-    .filter((p) => p.estado !== "entregado")
+    .filter((p) => p.estado !== "entregado" && p.estado !== "pagado")
     .sort((a, b) => a.createdAt - b.createdAt);
+
+  const solicitudes = data.llamadas
+    .filter((l) => l.estado === "nuevo")
+    .sort((a, b) => a.createdAt - b.createdAt);
+
+  const atenderLlamada = (id: string) => {
+    update({
+      ...data,
+      llamadas: data.llamadas.map((l) =>
+        l.id === id ? { ...l, estado: "atendido" as const } : l
+      ),
+    });
+  };
 
   const advance = (id: string) => {
     update({
@@ -66,6 +81,33 @@ export default function CocinaPage() {
           {activos.length} pendiente{activos.length === 1 ? "" : "s"}
         </span>
       </div>
+
+      {solicitudes.length > 0 && (
+        <section className="rounded-3xl border border-sky-500/30 bg-sky-500/5 p-5">
+          <h2 className="font-bold text-sky-300">
+            🔔 Solicitudes de mesa ({solicitudes.length})
+          </h2>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {solicitudes.map((l) => (
+              <div
+                key={l.id}
+                className="flex items-center gap-3 rounded-2xl bg-zinc-900 px-4 py-2.5"
+              >
+                <span className="text-sm">
+                  🪑 Mesa {l.mesa} —{" "}
+                  <b>{l.tipo === "mesero" ? "llama al mesero" : "pide la cuenta"}</b>
+                </span>
+                <button
+                  onClick={() => atenderLlamada(l.id)}
+                  className="rounded-full bg-sky-500 px-3 py-1 text-xs font-bold text-zinc-950 hover:bg-sky-400"
+                >
+                  Atendido ✓
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {activos.length === 0 ? (
         <div className="rounded-3xl border border-white/10 bg-white/5 p-12 text-center">

@@ -13,12 +13,14 @@ const estadoMeta: Record<PedidoEstado, { label: string; badge: string }> = {
     badge: "bg-sky-500/15 text-sky-400",
   },
   entregado: { label: "Entregado", badge: "bg-green-500/15 text-green-400" },
+  pagado: { label: "Pagado", badge: "bg-white/10 text-zinc-200" },
 };
 
 const nextEstado: Record<PedidoEstado, PedidoEstado> = {
   enviado: "en_preparacion",
   en_preparacion: "entregado",
   entregado: "entregado",
+  pagado: "pagado",
 };
 
 export default function PedidosPage() {
@@ -27,6 +29,9 @@ export default function PedidosPage() {
   const [mMesa, setMMesa] = useState(1);
   const [mDish, setMDish] = useState<string>("");
   const [mQty, setMQty] = useState(1);
+  const [cobro, setCobro] = useState<Pedido | null>(null);
+  const [metodo, setMetodo] = useState<"efectivo" | "tarjeta" | "transferencia" | "qr">("efectivo");
+  const [propina, setPropina] = useState(0);
   const started = useRef(false);
 
   useEffect(() => {
@@ -45,6 +50,29 @@ export default function PedidosPage() {
         p.id === id ? { ...p, estado: nextEstado[p.estado] } : p
       ),
     });
+  };
+
+  const cobrar = () => {
+    if (!cobro) return;
+    const pago = {
+      id: `pg-${Date.now()}`,
+      pedidoId: cobro.id,
+      mesa: cobro.mesa,
+      metodo,
+      monto: cobro.total,
+      propina,
+      cajero: "Admin",
+      createdAt: Date.now(),
+    };
+    update({
+      ...data,
+      pedidos: data.pedidos.map((p) =>
+        p.id === cobro.id ? { ...p, estado: "pagado" as const } : p
+      ),
+      pagos: [pago, ...data.pagos],
+    });
+    setCobro(null);
+    setPropina(0);
   };
 
   const addManual = () => {
@@ -140,7 +168,7 @@ export default function PedidosPage() {
                   </span>
                 ))}
               </div>
-              {p.estado !== "entregado" && (
+              {p.estado !== "entregado" && p.estado !== "pagado" && (
                 <button
                   onClick={() => advance(p.id)}
                   className="mt-4 rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-white hover:bg-white/15"
@@ -148,10 +176,88 @@ export default function PedidosPage() {
                   Avanzar a {estadoMeta[nextEstado[p.estado]].label} →
                 </button>
               )}
+              {p.estado === "entregado" && (
+                <button
+                  onClick={() => {
+                    setCobro(p);
+                    setPropina(0);
+                    setMetodo("efectivo");
+                  }}
+                  className="mt-4 rounded-full bg-amber-500 px-4 py-2 text-xs font-bold text-zinc-950 hover:bg-amber-400"
+                >
+                  💵 Cobrar
+                </button>
+              )}
             </div>
           );
         })}
       </div>
+
+      {cobro && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-sm space-y-4 rounded-3xl border border-white/10 bg-zinc-900 p-6">
+            <h3 className="text-lg font-black">
+              Cobrar Mesa {cobro.mesa} · {formatPrice(cobro.total)}
+            </h3>
+            <label className="block">
+              <span className="mb-1 block text-sm text-zinc-300">Método de pago</span>
+              <select
+                value={metodo}
+                onChange={(e) => setMetodo(e.target.value as typeof metodo)}
+                className="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 focus:border-amber-500/50 focus:outline-none"
+              >
+                <option value="efectivo">💵 Efectivo</option>
+                <option value="tarjeta">💳 Tarjeta</option>
+                <option value="transferencia">🏦 Transferencia bancaria</option>
+                <option value="qr">📱 QR Simple</option>
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1 block text-sm text-zinc-300">
+                Propina (Bs)
+              </span>
+              <input
+                type="number"
+                min={0}
+                value={propina}
+                onChange={(e) => setPropina(Number(e.target.value) || 0)}
+                className="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 focus:border-amber-500/50 focus:outline-none"
+              />
+            </label>
+            <div className="flex gap-2">
+              {[0, 5, 10, 15].map((p) => (
+                <button
+                  key={p}
+                  onClick={() =>
+                    setPropina(Number(((cobro.total * p) / 100).toFixed(2)))
+                  }
+                  className={`flex-1 rounded-full px-2 py-2 text-xs font-bold ${
+                    Math.round((propina / cobro.total) * 100) === p
+                      ? "bg-amber-500 text-zinc-950"
+                      : "bg-white/5 text-zinc-300 hover:bg-white/10"
+                  }`}
+                >
+                  {p}%
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={cobrar}
+                className="flex-1 rounded-full bg-amber-500 py-2.5 font-bold text-zinc-950 hover:bg-amber-400"
+              >
+                Confirmar pago
+              </button>
+              <button
+                onClick={() => setCobro(null)}
+                className="flex-1 rounded-full border border-white/15 py-2.5 font-semibold text-zinc-300 hover:bg-white/5"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {manual && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">

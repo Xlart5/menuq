@@ -12,13 +12,15 @@ export type Dish = {
   emoji: string;
   categoryId: string;
   popular?: boolean;
+  allergens?: string;
+  available?: boolean;
 };
 
 export type Mesa = {
   numero: number;
 };
 
-export type PedidoEstado = "enviado" | "en_preparacion" | "entregado";
+export type PedidoEstado = "enviado" | "en_preparacion" | "entregado" | "pagado";
 
 export type Pedido = {
   id: string;
@@ -37,10 +39,69 @@ export type Resena = {
   createdAt: number;
 };
 
+export type Item = {
+  id: string;
+  name: string;
+  unit: string;
+  stock: number;
+  minStock: number;
+  cost: number;
+  category: string;
+};
+
+export type Movimiento = {
+  id: string;
+  itemId: string;
+  tipo: "entrada" | "salida" | "merma";
+  qty: number;
+  motivo: string;
+  createdAt: number;
+};
+
+export type Recipe = {
+  id: string;
+  dishId: string;
+  itemId: string;
+  qty: number;
+};
+
+export type Gasto = {
+  id: string;
+  concepto: string;
+  monto: number;
+  categoria: string;
+  createdAt: number;
+};
+
+export type Llamada = {
+  id: string;
+  mesa: number;
+  tipo: "mesero" | "cuenta";
+  estado: "nuevo" | "atendido";
+  createdAt: number;
+};
+
+export type Pago = {
+  id: string;
+  pedidoId: string | null;
+  mesa: number;
+  metodo: "efectivo" | "tarjeta" | "transferencia" | "qr";
+  monto: number;
+  propina: number;
+  cajero: string;
+  createdAt: number;
+};
+
 export type AdminData = {
   categories: Category[];
   dishes: Dish[];
   mesas: Mesa[];
   pedidos: Pedido[];
   resenas: Resena[];
+  items: Item[];
+  movimientos: Movimiento[];
+  recipes: Recipe[];
+  gastos: Gasto[];
+  llamadas: Llamada[];
+  pagos: Pago[];
 };

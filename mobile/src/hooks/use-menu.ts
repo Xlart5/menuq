@@ -23,7 +23,7 @@ async function loadFromSupabase(): Promise<{ categories: Category[]; dishes: Dis
 
   const dsh = await supabase!
     .from("dishes")
-    .select("id, name, description, price, emoji, category_id, popular");
+    .select("id, name, description, price, emoji, category_id, popular, allergens, available");
   if (dsh.error || !dsh.data) throw dsh.error;
 
   const categories: Category[] = cats.data.map((c) => ({
@@ -40,6 +40,8 @@ async function loadFromSupabase(): Promise<{ categories: Category[]; dishes: Dis
     emoji: d.emoji,
     categoryId: d.category_id,
     popular: d.popular ?? false,
+    allergens: d.allergens ?? "",
+    available: d.available ?? true,
   }));
 
   return { categories, dishes };

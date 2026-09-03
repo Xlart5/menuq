@@ -65,6 +65,12 @@ export default function DishScreen() {
             </Text>
           )}
           <Text style={styles.description}>{dish.description}</Text>
+          {dish.allergens ? (
+            <Text style={styles.allergens}>⚠️ {dish.allergens}</Text>
+          ) : null}
+          {dish.available === false && (
+            <Text style={styles.allergens}>Hoy no disponible</Text>
+          )}
 
           <View style={styles.qtyRow}>
             <Text style={styles.qtyLabel}>Cantidad</Text>
@@ -181,6 +187,11 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     fontSize: 14,
     lineHeight: 20,
+  },
+  allergens: {
+    color: Colors.accent,
+    fontSize: 12,
+    fontWeight: "700",
   },
   qtyRow: {
     flexDirection: "row",

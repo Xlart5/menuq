@@ -13,6 +13,8 @@ const emptyForm = {
   emoji: "🍽️",
   categoryId: "entradas",
   popular: false,
+  allergens: "",
+  available: true,
 };
 
 export default function PlatosPage() {
@@ -36,6 +38,8 @@ export default function PlatosPage() {
       emoji: dish.emoji,
       categoryId: dish.categoryId,
       popular: !!dish.popular,
+      allergens: dish.allergens ?? "",
+      available: dish.available ?? true,
     });
   };
 
@@ -47,7 +51,7 @@ export default function PlatosPage() {
         ...data,
         dishes: data.dishes.map((d) =>
           d.id === editId
-            ? { ...d, ...form, popular: form.popular || d.popular }
+            ? { ...d, ...form, popular: (form.popular || d.popular) as boolean }
             : d
         ),
       });
@@ -65,6 +69,8 @@ export default function PlatosPage() {
             emoji: form.emoji || "🍽️",
             categoryId: form.categoryId,
             popular: form.popular,
+            allergens: form.allergens,
+            available: form.available,
           },
         ],
       });
@@ -123,6 +129,11 @@ export default function PlatosPage() {
                         Popular
                       </span>
                     )}
+                    {dish.available === false && (
+                      <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-bold text-red-400">
+                        😴 Agotado
+                      </span>
+                    )}
                   </p>
                   <p className="truncate text-xs text-zinc-500">
                     {dish.description}
@@ -132,6 +143,21 @@ export default function PlatosPage() {
                   </p>
                 </div>
                 <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      update({
+                        ...data,
+                        dishes: data.dishes.map((d) =>
+                          d.id === dish.id
+                            ? { ...d, available: d.available === false }
+                            : d
+                        ),
+                      })
+                    }
+                    className="rounded-full bg-white/5 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:bg-white/10"
+                  >
+                    {dish.available === false ? "Disponer" : "Agotar"}
+                  </button>
                   <button
                     onClick={() => startEdit(dish)}
                     className="rounded-full bg-white/5 px-3 py-1.5 text-xs font-semibold text-zinc-300 hover:bg-white/10"
@@ -201,14 +227,30 @@ export default function PlatosPage() {
                 </option>
               ))}
             </select>
-            <label className="flex items-center gap-2 text-sm text-zinc-300">
-              <input
-                type="checkbox"
-                checked={form.popular}
-                onChange={(e) => setForm({ ...form, popular: e.target.checked })}
-              />
-              Marcar como popular ⭐
-            </label>
+            <input
+              value={form.allergens}
+              onChange={(e) => setForm({ ...form, allergens: e.target.value })}
+              placeholder="Alérgenos (ej. contiene gluten, lactosa)"
+              className="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5 focus:border-amber-500/50 focus:outline-none"
+            />
+            <div className="flex items-center gap-4 text-sm text-zinc-300">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={form.popular}
+                  onChange={(e) => setForm({ ...form, popular: e.target.checked })}
+                />
+                Popular ⭐
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={form.available}
+                  onChange={(e) => setForm({ ...form, available: e.target.checked })}
+                />
+                Disponible
+              </label>
+            </div>
             <div className="flex gap-3 pt-2">
               <button
                 onClick={save}

@@ -17,6 +17,7 @@ import { useCart } from "@/context/cart";
 import { useOrders } from "@/context/orders";
 import { Dish, formatPrice, RESTAURANT } from "@/data/menu";
 import { useMenu } from "@/hooks/use-menu";
+import { supabase } from "@/lib/supabase";
 
 type SectionData = {
   title: string;
@@ -35,6 +36,8 @@ export default function MesaScreen() {
   const mesaNum = Number(numero);
   const misPedidos = pedidos.filter((p) => p.mesa === mesaNum);
 
+  const [llamadaMsg, setLlamadaMsg] = useState("");
+
   const sections = useMemo<SectionData[]>(() => {
     const q = query.trim().toLowerCase();
     const visibleCats =
@@ -45,12 +48,26 @@ export default function MesaScreen() {
       data: dishes.filter(
         (d) =>
           d.categoryId === cat.id &&
+          d.available !== false &&
           (q === "" ||
             d.name.toLowerCase().includes(q) ||
             d.description.toLowerCase().includes(q))
       ),
     }));
   }, [active, query, categories, dishes]);
+
+  const solicitar = (tipo: "mesero" | "cuenta") => {
+    supabase
+      .from("llamadas")
+      .insert({
+        id: `ll-${Date.now()}`,
+        mesa: mesaNum,
+        tipo,
+        estado: "nuevo",
+        created_at: new Date().toISOString(),
+      })
+      .then(() => setLlamadaMsg(tipo === "mesero" ? "¡Mesero en camino!" : "Tu cuenta llegará en un momento."));
+  };
 
   const submitOrder = () => {
     if (items.length === 0) return;
@@ -84,6 +101,18 @@ export default function MesaScreen() {
           </Pressable>
         )}
       </SafeAreaView>
+
+      <View style={styles.serviceRow}>
+        <Pressable style={styles.serviceButton} onPress={() => solicitar("mesero")}>
+          <Text style={styles.serviceLabel}>🛎️ Llamar al mesero</Text>
+        </Pressable>
+        <Pressable style={styles.serviceButton} onPress={() => solicitar("cuenta")}>
+          <Text style={styles.serviceLabel}>🧾 Pedir la cuenta</Text>
+        </Pressable>
+      </View>
+      {llamadaMsg !== "" && (
+        <Text style={styles.serviceMsg}>✅ {llamadaMsg}</Text>
+      )}
 
       <View style={styles.toolbar}>
         <TextInput
@@ -237,6 +266,33 @@ const styles = StyleSheet.create({
   },
   toolbar: {
     gap: Spacing.s,
+    paddingHorizontal: Spacing.l,
+    paddingBottom: Spacing.s,
+  },
+  serviceRow: {
+    flexDirection: "row",
+    gap: Spacing.s,
+    paddingHorizontal: Spacing.l,
+    paddingBottom: Spacing.m,
+  },
+  serviceButton: {
+    flex: 1,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.m - 2,
+    alignItems: "center",
+  },
+  serviceLabel: {
+    color: Colors.text,
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  serviceMsg: {
+    color: Colors.success,
+    fontSize: 13,
+    fontWeight: "700",
     paddingHorizontal: Spacing.l,
     paddingBottom: Spacing.s,
   },

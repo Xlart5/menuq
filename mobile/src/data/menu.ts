@@ -12,6 +12,8 @@ export type Dish = {
   emoji: string;
   categoryId: string;
   popular?: boolean;
+  allergens?: string;
+  available?: boolean;
 };
 
 export const RESTAURANT = {
@@ -40,6 +42,7 @@ export const dishes: Dish[] = [
     emoji: "🧀",
     categoryId: "entradas",
     popular: true,
+    allergens: "contiene lactosa",
   },
   {
     id: "chorizo",
@@ -98,6 +101,7 @@ export const dishes: Dish[] = [
     price: 7.9,
     emoji: "🥗",
     categoryId: "guarniciones",
+    allergens: "contiene gluten, lactosa y huevo",
   },
   {
     id: "torta",
@@ -107,6 +111,7 @@ export const dishes: Dish[] = [
     emoji: "🍰",
     categoryId: "dulces",
     popular: true,
+    allergens: "contiene gluten, lactosa y huevo",
   },
   {
     id: "cheesecake",
@@ -115,6 +120,7 @@ export const dishes: Dish[] = [
     price: 6.9,
     emoji: "🎂",
     categoryId: "dulces",
+    allergens: "contiene lactosa",
   },
   {
     id: "limonada",
