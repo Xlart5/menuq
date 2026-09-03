@@ -43,8 +43,8 @@ Objetivo: experiencia de lujo que el cliente diga "esto lo quiero".
 
 - [x] Vercel: landing + admin + web de la app desplegados en producción
       (menuq-landing / menuq-admin / menuq-app-mobile .vercel.app)
-- [ ] GitHub: repo remoto + GitHub Actions (lint/builds automáticos en cada push)
-- [ ] Recomendar Vercel: autorizar "vercel integration" para auto-deploy desde Git
+- [x] GitHub: repo público (https://github.com/Xlart5/menuq) + auto-deploy:
+      cada `git push` compila y publica las 3 apps solas (verificado)
 - [ ] Expo EAS: builds de Android/iOS para tienda (Play Store / App Store)
 - [ ] Dominio propio (ej. elbuensabor.com) para el QR real de producción
 - [ ] Supabase en producción + backups + monitoreo (uptime)
