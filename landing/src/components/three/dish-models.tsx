@@ -321,29 +321,29 @@ function Sticks() {
 
 export function DishModel({ id }: { id: string }) {
   switch (id) {
-    case "classica":
-      return <Burger />;
-    case "double":
-      return <Burger double />;
-    case "margherita":
-      return <Pizza />;
-    case "pepperoni":
-      return <Pizza pepperoni />;
-    case "costillas":
+    case "provoleta":
+      return <Nachos />;
+    case "chorizo":
+      return <Sticks />;
+    case "bife":
+      return <PlateDish veggies />;
+    case "ojo":
       return <Ribs />;
+    case "asado":
+      return <PlateDish veggies />;
     case "lomo":
       return <PlateDish veggies />;
-    case "palitos":
-      return <Sticks />;
-    case "nachos":
-      return <Nachos />;
+    case "papas":
+      return <PlateDish />;
+    case "ensalada":
+      return <PlateDish veggies />;
     case "torta":
       return <CakeSlice />;
     case "cheesecake":
       return <CakeSlice flavor="cheesecake" />;
     case "limonada":
       return <Drink />;
-    case "maracuya":
+    case "vino":
       return <Drink juice="maracuya" />;
     default:
       return <EmojiFallback />;

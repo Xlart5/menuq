@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useAdminData } from "@/hooks/use-admin-data";
 import { formatPrice, timeAgo } from "@/lib/data";
@@ -22,11 +22,19 @@ const nextEstado: Record<PedidoEstado, PedidoEstado> = {
 };
 
 export default function PedidosPage() {
-  const { data, update } = useAdminData();
+  const { data, update, reload, remote } = useAdminData();
   const [manual, setManual] = useState(false);
   const [mMesa, setMMesa] = useState(1);
   const [mDish, setMDish] = useState<string>("");
   const [mQty, setMQty] = useState(1);
+  const started = useRef(false);
+
+  useEffect(() => {
+    if (!remote || started.current) return;
+    started.current = true;
+    const timer = setInterval(() => reload(), 12000);
+    return () => clearInterval(timer);
+  }, [remote, reload]);
 
   if (!data) return <p className="text-zinc-500">Cargando…</p>;
 
@@ -72,6 +80,11 @@ export default function PedidosPage() {
           <h1 className="text-2xl font-black">Pedidos</h1>
           <p className="text-sm text-zinc-500">
             Cambia estados, atiende pedidos y registra ventas manuales.
+            {remote && (
+              <span className="ml-2 rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-bold text-green-400">
+                ● En vivo (cada 12s)
+              </span>
+            )}
           </p>
         </div>
         <button

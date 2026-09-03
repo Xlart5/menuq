@@ -16,7 +16,7 @@ export default function HeroScene() {
       <ambientLight intensity={0.35} />
       <pointLight position={[4, 6, 4]} intensity={60} color="#f6c95c" decay={1.6} />
       <pointLight position={[-4, 2, -3]} intensity={30} color="#ffffff" decay={1.8} />
-      <DishPedestal id="costillas" />
+      <DishPedestal id="ojo" />
       <Sparkles count={70} scale={[5, 4, 5]} size={2.4} speed={0.35} color="#f6c95c" opacity={0.7} />
       <ContactShadows position={[0, -1.02, 0]} opacity={0.5} scale={7} blur={2.6} far={3} color="#000000" />
       <OrbitControls

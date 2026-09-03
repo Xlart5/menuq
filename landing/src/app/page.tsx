@@ -66,9 +66,9 @@ function Hero() {
             ⭐ {restaurant.rating} · {restaurant.reviewsCount} reseñas
           </span>
           <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Cocina criolla & parrilla{" "}
+            Cortes premium & parrilla{" "}
             <span className="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-              desde 1998
+              de quebracho
             </span>
           </h1>
           <p className="max-w-xl text-lg text-zinc-400">{restaurant.description}</p>
@@ -104,15 +104,15 @@ function About() {
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-20 lg:grid-cols-2">
         <div className="space-y-4">
           <h2 className="text-3xl font-black tracking-tight sm:text-4xl">
-            25 años de sabor en cada plato
+            25 años de fuego en cada corte
           </h2>
           <p className="text-zinc-400">
             {restaurant.description}
           </p>
           <p className="text-zinc-400">
-            Cada plato es parte de nuestra historia: recetas heredadas,
-            productos frescos del mercado y el clásico fuego de carbón que hace
-            única nuestra parrilla.
+            Cada corte pasa por maduración en seco y se cocina sobre carbón de
+            quebracho: la técnica de toda una vida perfeccionada en cada
+            detalle.
           </p>
           <div className="grid grid-cols-2 gap-4 pt-4">
             {stats.map((s) => (

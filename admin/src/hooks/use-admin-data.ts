@@ -108,6 +108,16 @@ export function useAdminData() {
     });
   }, []);
 
+  const reload = () => {
+    if (!supabase) return;
+    loadFromSupabase().then((remoteData) => {
+      if (remoteData) {
+        setData(remoteData);
+        setRemote(true);
+      }
+    });
+  };
+
   const update = (next: AdminData) => {
     saveData(next);
     setData(next);
@@ -119,5 +129,5 @@ export function useAdminData() {
     saveToSupabase(resetData());
   };
 
-  return { data, update, reset, remote };
+  return { data, update, reset, reload, remote };
 }

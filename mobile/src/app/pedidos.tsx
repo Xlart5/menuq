@@ -1,4 +1,5 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors, Radius, Spacing } from "@/constants/theme";
@@ -9,9 +10,9 @@ const estadoMeta: Record<
   Pedido["estado"],
   { label: string; color: string; emoji: string }
 > = {
-  enviado: { label: "Enviado a la cocina", color: Colors.accent, emoji: "📝" },
-  en_preparacion: { label: "En preparación", color: "#38bdf8", emoji: "👨‍🍳" },
-  entregado: { label: "Entregado 🎉", color: Colors.success, emoji: "🎉" },
+  enviado: { label: "Enviado a la parrilla 🔥", color: Colors.accent, emoji: "📝" },
+  en_preparacion: { label: "Se está cocinando 👨‍🍳", color: "#38bdf8", emoji: "🔥" },
+  entregado: { label: "Entregado a tu mesa 🎉", color: Colors.success, emoji: "🎉" },
 };
 
 function timeAgo(ts: number) {
@@ -22,34 +23,54 @@ function timeAgo(ts: number) {
 }
 
 export default function PedidosScreen() {
-  const { pedidos } = useOrders();
+  const router = useRouter();
+  const { pedidos, lastMesa } = useOrders();
 
   return (
     <View style={styles.container}>
       <SafeAreaView edges={["top"]} style={styles.safe}>
-        <Text style={styles.title}>🧾 Tus pedidos</Text>
-        <Text style={styles.subtitle}>
-          Aquí ves el estado de los pedidos que enviaste desde tu mesa.
-        </Text>
+        <Pressable onPress={() => router.back()} style={styles.backButton} hitSlop={8}>
+          <Text style={styles.backLabel}>‹</Text>
+        </Pressable>
+        <View>
+          <Text style={styles.title}>🧾 Mi pedido</Text>
+          <Text style={styles.subtitle}>
+            Estado en tiempo real de lo que pediste.
+          </Text>
+        </View>
       </SafeAreaView>
 
       <FlatList
         data={pedidos}
         keyExtractor={(p) => p.id}
-        renderItem={({ item }) => (
-          <PedidoCard pedido={item} />
-        )}
+        renderItem={({ item }) => <PedidoCard pedido={item} />}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Text style={styles.emptyEmoji}>🛒</Text>
+            <Text style={styles.emptyEmoji}>🔥</Text>
             <Text style={styles.emptyText}>
-              Aún no enviaste ningún pedido. Ve a una mesa y pide desde el
-              menú.
+              Aún no pediste. Ve al menú de tu mesa y pide algo rico.
             </Text>
           </View>
         }
         contentContainerStyle={styles.listContent}
       />
+
+      <View style={styles.footer}>
+        {lastMesa !== null ? (
+          <Pressable
+            style={styles.primaryButton}
+            onPress={() => router.push(`/mesa/${lastMesa}`)}
+          >
+            <Text style={styles.primaryButtonLabel}>
+              🍽️ Ver el menú de nuevo (Mesa {lastMesa})
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable style={styles.primaryButton} onPress={() => router.replace("/")}>
+            <Text style={styles.primaryButtonLabel}>🍽️ Ver el menú</Text>
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }
@@ -77,9 +98,7 @@ function PedidoCard({ pedido }: { pedido: Pedido }) {
           <Text style={styles.itemName}>
             {it.emoji} {it.qty}× {it.name}
           </Text>
-          <Text style={styles.itemPrice}>
-            {formatPrice(it.price * it.qty)}
-          </Text>
+          <Text style={styles.itemPrice}>{formatPrice(it.price * it.qty)}</Text>
         </View>
       ))}
       <View style={styles.cardFooter}>
@@ -96,9 +115,29 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   safe: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: Spacing.l,
     paddingTop: Spacing.m,
+    gap: Spacing.m,
     paddingBottom: Spacing.s,
+  },
+  backButton: {
+    width: 34,
+    height: 34,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  backLabel: {
+    color: Colors.text,
+    fontSize: 24,
+    fontWeight: "800",
+    lineHeight: 26,
+    marginTop: -2,
   },
   title: {
     color: Colors.text,
@@ -107,13 +146,12 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: Colors.textMuted,
-    fontSize: 13,
-    marginTop: 2,
+    fontSize: 12,
   },
   listContent: {
     paddingHorizontal: Spacing.l,
-    paddingTop: Spacing.m,
-    paddingBottom: Spacing.xxl * 2,
+    paddingTop: Spacing.s,
+    paddingBottom: Spacing.xl,
   },
   card: {
     backgroundColor: Colors.surface,
@@ -181,6 +219,23 @@ const styles = StyleSheet.create({
     color: Colors.text,
     fontSize: 15,
     fontWeight: "900",
+  },
+  footer: {
+    padding: Spacing.l,
+    borderTopWidth: 1,
+    borderTopColor: Colors.border,
+    backgroundColor: Colors.surface,
+  },
+  primaryButton: {
+    backgroundColor: Colors.accent,
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.m + 2,
+    alignItems: "center",
+  },
+  primaryButtonLabel: {
+    color: "#09090b",
+    fontSize: 15,
+    fontWeight: "800",
   },
   empty: {
     alignItems: "center",

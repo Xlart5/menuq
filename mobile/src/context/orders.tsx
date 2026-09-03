@@ -24,6 +24,7 @@ export type Pedido = {
 
 type OrdersContextValue = {
   pedidos: Pedido[];
+  lastMesa: number | null;
   createPedido: (mesa: number, items: { dish: Dish; qty: number }[]) => void;
 };
 
@@ -31,9 +32,11 @@ const OrdersContext = createContext<OrdersContextValue | null>(null);
 
 export function OrdersProvider({ children }: { children: React.ReactNode }) {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [lastMesa, setLastMesa] = useState<number | null>(null);
 
   const createPedido = useCallback(
     (mesa: number, items: { dish: Dish; qty: number }[]) => {
+      setLastMesa(mesa);
       const pedido: Pedido = {
         id: `P-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         mesa,
@@ -88,7 +91,10 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
     []
   );
 
-  const value = useMemo(() => ({ pedidos, createPedido }), [pedidos, createPedido]);
+  const value = useMemo(
+    () => ({ pedidos, lastMesa, createPedido }),
+    [pedidos, lastMesa, createPedido]
+  );
 
   return <OrdersContext.Provider value={value}>{children}</OrdersContext.Provider>;
 }

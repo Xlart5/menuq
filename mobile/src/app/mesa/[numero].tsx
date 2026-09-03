@@ -29,7 +29,7 @@ export default function MesaScreen() {
   const router = useRouter();
   const { categories, dishes } = useMenu();
   const { items, totalItems, totalPrice, add, clear } = useCart();
-  const { createPedido } = useOrders();
+  const { createPedido, pedidos } = useOrders();
   const [active, setActive] = useState<string>("all");
   const [query, setQuery] = useState("");
 
@@ -54,7 +54,7 @@ export default function MesaScreen() {
     if (items.length === 0) return;
     createPedido(Number(numero), items);
     clear();
-    router.push("/pedidos");
+    router.replace("/pedidos");
   };
 
   return (
@@ -71,6 +71,16 @@ export default function MesaScreen() {
           <Text style={styles.badge}>{RESTAURANT.name}</Text>
           <Text style={styles.title}>🍽️ Mesa {numero}</Text>
         </View>
+        <View style={{ flex: 1 }} />
+        {pedidos.length > 0 && (
+          <Pressable
+            style={styles.myOrderButton}
+            onPress={() => router.push("/pedidos")}
+            hitSlop={8}
+          >
+            <Text style={styles.myOrderLabel}>🧾 {pedidos.length}</Text>
+          </Pressable>
+        )}
       </SafeAreaView>
 
       <View style={styles.toolbar}>
@@ -195,6 +205,18 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     lineHeight: 26,
     marginTop: -2,
+  },
+  myOrderButton: {
+    backgroundColor: Colors.accentSoft,
+    borderRadius: Radius.full,
+    paddingHorizontal: Spacing.m,
+    paddingVertical: Spacing.s,
+    marginBottom: Spacing.s,
+  },
+  myOrderLabel: {
+    color: Colors.accent,
+    fontSize: 14,
+    fontWeight: "800",
   },
   headerInfo: {
     marginBottom: Spacing.s,

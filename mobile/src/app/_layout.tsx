@@ -18,8 +18,9 @@ export default function RootLayout() {
               contentStyle: { backgroundColor: Colors.background },
             }}
           >
-            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="index" />
             <Stack.Screen name="mesa/[numero]" />
+            <Stack.Screen name="pedidos" />
             <Stack.Screen
               name="dish/[id]"
               options={{ presentation: "modal", animation: "slide_from_bottom" }}
