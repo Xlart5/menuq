@@ -48,9 +48,9 @@ export default function AdminLayout({
       <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-white/10 bg-zinc-950 px-4 py-6">
         <Link href="/dashboard" className="mb-8 flex items-center gap-2 px-2">
           <span className="rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 px-2 py-1 font-black text-zinc-950">
-            Q
+            LE
           </span>
-          <span className="font-bold">MenuQ Admin</span>
+          <span className="font-bold">La Estancia</span>
         </Link>
         <nav className="flex-1 space-y-1">
           {nav.map((item) => {

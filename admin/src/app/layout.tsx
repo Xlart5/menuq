@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MenuQ Admin — Panel del restaurante",
-  description: "Panel administrativo de MenuQ: menú, mesas, pedidos y reseñas.",
+  title: "La Estancia · Panel de administración",
+  description: "Panel de administración de La Estancia: menú, mesas, pedidos y reseñas.",
 };
 
 export default function RootLayout({

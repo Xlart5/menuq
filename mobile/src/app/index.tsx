@@ -31,9 +31,9 @@ export default function HomeScreen() {
         )}
 
         <View style={styles.demoBox}>
-          <Text style={styles.demoTitle}>🛠️ Modo demo (para pruebas)</Text>
+          <Text style={styles.demoTitle}>👨‍🍳 Acceso del personal</Text>
           <Text style={styles.demoText}>
-            Toca una mesa para simular el escaneo de su QR
+            Selecciona una mesa para abrir el flujo de pedido del cliente
           </Text>
           <FlatList
             data={mesas}

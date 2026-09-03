@@ -36,7 +36,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-2xl font-black">Dashboard</h1>
         <p className="text-sm text-zinc-500">
-          El Buen Sabor · Resumen del día
+          La Estancia · Resumen del día
         </p>
       </div>
 

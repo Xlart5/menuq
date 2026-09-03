@@ -28,9 +28,9 @@ export default function LoginPage() {
           <span className="inline-block rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 px-3 py-1.5 font-black text-zinc-950">
             Q
           </span>
-          <h1 className="mt-4 text-2xl font-black">MenuQ Admin</h1>
+          <h1 className="mt-4 text-2xl font-black">La Estancia</h1>
           <p className="mt-1 text-sm text-zinc-500">
-            Panel del restaurante El Buen Sabor
+            Panel de administración del restaurante
           </p>
         </div>
         <form
@@ -62,7 +62,7 @@ export default function LoginPage() {
             Entrar
           </button>
           <p className="text-center text-xs text-zinc-500">
-            Demo: cualquier correo y contraseña funcionan.
+            Acceso inicial: ingresá con tu correo y contraseña del local.
           </p>
         </form>
       </div>

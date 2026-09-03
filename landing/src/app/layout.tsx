@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MenuQ — Menú digital para restaurantes",
+  title: "La Estancia — Steakhouse premium · Cortes madurados",
   description:
-    "El menú digital con QR que tu restaurante necesita. Catálogo en tiempo real, pedidos y estadísticas en una sola app. Prueba la demo.",
+    "Cortes premium con maduración en seco, parrilla de carbón de quebracho y carta de vinos seleccionada. Reserva tu mesa y pedí desde el QR.",
 };
 
 export default function RootLayout({
