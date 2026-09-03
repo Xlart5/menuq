@@ -1,9 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+const url =
+  process.env.EXPO_PUBLIC_SUPABASE_URL ??
+  "https://vengiwcaizzknbnohbry.supabase.co";
+const anonKey =
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ??
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbmdpd2NhaXp6a25ibm9oYnJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MDM4NzMsImV4cCI6MjEwMzk3OTg3M30.UeArvrjWyKiZ0DGBjN4MZ3DQOWKU5Y8pmp7J6M-VqZs";
 
-export const supabase =
-  url && anonKey ? createClient(url, anonKey) : null;
+export const supabase = createClient(url, anonKey);
 
-export const isSupabaseConfigured = supabase !== null;
+export const isSupabaseConfigured = true;
