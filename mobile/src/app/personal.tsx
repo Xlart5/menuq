@@ -13,27 +13,78 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors, Radius, Spacing } from "@/constants/theme";
 import { useStaff } from "@/hooks/use-staff";
-
-const STAFF_PIN = "1234";
+import { supabase } from "@/lib/supabase";
 
 export default function PersonalScreen() {
   const router = useRouter();
   const { setStaff } = useStaff();
-  const [pin, setPin] = useState("");
+  const [mode, setMode] = useState<"entrar" | "registrar">("entrar");
   const [nombre, setNombre] = useState("");
+  const [pin, setPin] = useState("");
   const [error, setError] = useState("");
+  const [okMsg, setOkMsg] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const entrar = () => {
-    if (pin !== STAFF_PIN) {
-      setError("PIN incorrecto. Pedí tu PIN al administrador.");
+  const entrar = async () => {
+    setError("");
+    setOkMsg("");
+    if (!nombre.trim() || pin.length < 4) {
+      setError("Ingresá tu nombre y PIN de 4 dígitos.");
       return;
     }
-    if (!nombre.trim()) {
-      setError("Ingresá tu nombre para identificarte en el salón.");
+    setBusy(true);
+    const { data, error: err } = await supabase
+      .from("personales")
+      .select("id, nombre, estado")
+      .eq("nombre", nombre.trim().toLowerCase())
+      .eq("pin", pin);
+    setBusy(false);
+    if (err) {
+      setError("No se pudo validar. Revisa tu conexión.");
       return;
     }
-    setStaff({ nombre: nombre.trim() });
+    if (!data || data.length === 0) {
+      setError("Nombre o PIN incorrecto.");
+      return;
+    }
+    const perfil = data[0];
+    if (perfil.estado === "pendiente") {
+      setError("Tu registro está en espera de aprobación del administrador.");
+      return;
+    }
+    if (perfil.estado === "rechazado") {
+      setError("Tu solicitud fue rechazada. Consulta al administrador.");
+      return;
+    }
+    setStaff({ nombre: perfil.nombre });
     router.replace("/personal-hub");
+  };
+
+  const registrar = async () => {
+    setError("");
+    setOkMsg("");
+    if (!nombre.trim() || pin.length < 4) {
+      setError("Ingresá tu nombre y un PIN de 4 dígitos.");
+      return;
+    }
+    setBusy(true);
+    const { error: err } = await supabase.from("personales").insert({
+      id: `p-${Date.now()}`,
+      nombre: nombre.trim().toLowerCase(),
+      pin,
+      estado: "pendiente",
+      created_at: new Date().toISOString(),
+    });
+    setBusy(false);
+    if (err) {
+      setError("Ya existe un registro con ese nombre. Probá otro.");
+      return;
+    }
+    setOkMsg(
+      "¡Solicitud enviada! El administrador debe aprobarla antes de que puedas entrar."
+    );
+    setMode("entrar");
+    setPin("");
   };
 
   return (
@@ -48,20 +99,54 @@ export default function PersonalScreen() {
         <Text style={styles.emoji}>🧑‍🍳</Text>
         <Text style={styles.title}>Acceso del personal</Text>
         <Text style={styles.subtitle}>
-          Meseros y mozos: ingresá con tu PIN y asigná tus mesas escaneando el
-          QR.
+          {mode === "entrar"
+            ? "Entrá con el nombre y PIN que te dio el administrador."
+            : "Creá tu cuenta: quedará en espera de aprobación."}
         </Text>
 
         <View style={styles.form}>
+          <View style={styles.modeRow}>
+            <Pressable
+              style={[styles.modeButton, mode === "entrar" && styles.modeActive]}
+              onPress={() => {
+                setMode("entrar");
+                setError("");
+                setOkMsg("");
+              }}
+            >
+              <Text style={[styles.modeLabel, mode === "entrar" && styles.modeLabelActive]}>
+                Entrar
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.modeButton, mode === "registrar" && styles.modeActive]}
+              onPress={() => {
+                setMode("registrar");
+                setError("");
+                setOkMsg("");
+              }}
+            >
+              <Text
+                style={[
+                  styles.modeLabel,
+                  mode === "registrar" && styles.modeLabelActive,
+                ]}
+              >
+                Registrarme
+              </Text>
+            </Pressable>
+          </View>
+
           <Text style={styles.label}>Nombre</Text>
           <TextInput
             value={nombre}
             onChangeText={setNombre}
-            placeholder="Ej. Brayan"
+            placeholder="Tu nombre (ej. Brayan)"
             placeholderTextColor={Colors.textMuted}
             style={styles.input}
+            autoCapitalize="words"
           />
-          <Text style={styles.label}>PIN</Text>
+          <Text style={styles.label}>PIN (4 dígitos)</Text>
           <TextInput
             value={pin}
             onChangeText={setPin}
@@ -73,10 +158,24 @@ export default function PersonalScreen() {
             maxLength={4}
           />
           {error !== "" && <Text style={styles.error}>{error}</Text>}
-          <Pressable style={styles.button} onPress={entrar}>
-            <Text style={styles.buttonLabel}>Entrar como mesero</Text>
+          {okMsg !== "" && <Text style={styles.ok}>{okMsg}</Text>}
+          <Pressable
+            style={[styles.button, busy && { opacity: 0.6 }]}
+            onPress={mode === "entrar" ? entrar : registrar}
+          >
+            <Text style={styles.buttonLabel}>
+              {busy
+                ? "Un momento…"
+                : mode === "entrar"
+                  ? "Entrar como mesero"
+                  : "Solicitar acceso"}
+            </Text>
           </Pressable>
-          <Text style={styles.hint}>PIN inicial de demostración: 1234</Text>
+          <Text style={styles.hint}>
+            {mode === "entrar"
+              ? "¿No tenés cuenta? Usá la pestaña Registrarme."
+              : "El administrador aprueba tu acceso desde el panel."}
+          </Text>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -132,6 +231,33 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
     gap: Spacing.s,
   },
+  modeRow: {
+    flexDirection: "row",
+    gap: Spacing.s,
+    marginBottom: Spacing.s,
+  },
+  modeButton: {
+    flex: 1,
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    backgroundColor: Colors.surface,
+    paddingVertical: Spacing.s,
+    alignItems: "center",
+  },
+  modeActive: {
+    backgroundColor: Colors.accent,
+    borderColor: Colors.accent,
+  },
+  modeLabel: {
+    color: Colors.textMuted,
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  modeLabelActive: {
+    color: "#09090b",
+    fontWeight: "800",
+  },
   label: {
     color: Colors.text,
     fontSize: 13,
@@ -150,6 +276,11 @@ const styles = StyleSheet.create({
   error: {
     color: Colors.danger,
     fontSize: 13,
+  },
+  ok: {
+    color: Colors.success,
+    fontSize: 13,
+    fontWeight: "700",
   },
   button: {
     backgroundColor: Colors.accent,

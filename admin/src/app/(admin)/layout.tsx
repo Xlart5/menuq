@@ -17,6 +17,8 @@ const nav = [
   { href: "/categorias", label: "Categorías", emoji: "🗂️", adminOnly: true },
   { href: "/mesas", label: "Mesas & QR", emoji: "🪑", adminOnly: true },
   { href: "/resenas", label: "Reseñas", emoji: "⭐", adminOnly: true },
+  { href: "/personal", label: "Personal", emoji: "👥", adminOnly: true },
+  { href: "/descargas", label: "Descargas", emoji: "📲", adminOnly: true },
 ];
 
 export default function AdminLayout({

@@ -99,6 +99,9 @@ const demo: AdminData = {
   asignaciones: [
     { id: "as-2", mesa: 2, mesero: "Brayan", estado: "asignada", createdAt: Date.now() - 3600000 },
   ],
+  personales: [
+    { id: "demo-brayan", nombre: "Brayan", pin: "1234", estado: "aprobado", createdAt: Date.now() - 86400000 },
+  ],
 };
 
 export function loadData(): AdminData {

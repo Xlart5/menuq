@@ -106,6 +106,14 @@ export type Asignacion = {
   createdAt: number;
 };
 
+export type Personal = {
+  id: string;
+  nombre: string;
+  pin: string;
+  estado: "pendiente" | "aprobado" | "rechazado";
+  createdAt: number;
+};
+
 export type AdminData = {
   categories: Category[];
   dishes: Dish[];
@@ -119,4 +127,5 @@ export type AdminData = {
   llamadas: Llamada[];
   pagos: Pago[];
   asignaciones: Asignacion[];
+  personales: Personal[];
 };

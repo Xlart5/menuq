@@ -9,7 +9,7 @@ import { AdminData, Pedido } from "@/lib/types";
 const allTables = [
   "categories", "dishes", "mesas", "orders", "resenas",
   "items", "movimientos", "recipes", "gastos", "llamadas", "pagos",
-  "asignaciones",
+  "asignaciones", "personales",
 ] as const;
 
 const columnMaps: Record<string, Record<string, string>> = {
@@ -28,6 +28,7 @@ const columnMaps: Record<string, Record<string, string>> = {
   llamadas: { mesa: "mesa", tipo: "tipo", estado: "estado", createdAt: "created_at" },
   pagos: { pedidoId: "pedido_id", mesa: "mesa", metodo: "metodo", monto: "monto", propina: "propina", cajero: "cajero", createdAt: "created_at" },
   asignaciones: { mesa: "mesa", mesero: "mesero", estado: "estado", createdAt: "created_at" },
+  personales: { nombre: "nombre", pin: "pin", estado: "estado", createdAt: "created_at" },
 };
 
 async function loadFromSupabase(): Promise<AdminData | null> {
@@ -86,6 +87,7 @@ async function loadFromSupabase(): Promise<AdminData | null> {
       llamadas: (results.llamadas as Record<string, unknown>[]).map((r) => mapRow("llamadas", r)) as AdminData["llamadas"],
       pagos: (results.pagos as Record<string, unknown>[]).map((r) => mapRow("pagos", r)) as AdminData["pagos"],
       asignaciones: (results.asignaciones as Record<string, unknown>[]).map((r) => mapRow("asignaciones", r)) as AdminData["asignaciones"],
+      personales: (results.personales as Record<string, unknown>[]).map((r) => mapRow("personales", r)) as AdminData["personales"],
     };
   } catch {
     return null;
@@ -163,6 +165,13 @@ async function saveToSupabase(data: AdminData) {
     data.asignaciones.map((a) => ({
       id: a.id, mesa: a.mesa, mesero: a.mesero, estado: a.estado,
       created_at: new Date(a.createdAt).toISOString(),
+    })),
+    { onConflict: "id" }
+  );
+  await supabase.from("personales").upsert(
+    data.personales.map((p) => ({
+      id: p.id, nombre: p.nombre, pin: p.pin, estado: p.estado,
+      created_at: new Date(p.createdAt).toISOString(),
     })),
     { onConflict: "id" }
   );
