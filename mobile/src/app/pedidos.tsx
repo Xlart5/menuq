@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,7 +24,13 @@ function timeAgo(ts: number) {
 
 export default function PedidosScreen() {
   const router = useRouter();
-  const { pedidos, lastMesa } = useOrders();
+  const { mesa } = useLocalSearchParams<{ mesa?: string }>();
+  const { pedidos } = useOrders();
+  const mesaNum = mesa !== undefined ? Number(mesa) : null;
+
+  const misPedidos = mesaNum !== null
+    ? pedidos.filter((p) => p.mesa === mesaNum)
+    : [];
 
   return (
     <View style={styles.container}>
@@ -33,22 +39,24 @@ export default function PedidosScreen() {
           <Text style={styles.backLabel}>‹</Text>
         </Pressable>
         <View>
-          <Text style={styles.title}>🧾 Mi pedido</Text>
+          <Text style={styles.title}>
+            🧾 Mi pedido{mesaNum !== null ? ` · Mesa ${mesaNum}` : ""}
+          </Text>
           <Text style={styles.subtitle}>
-            Estado en tiempo real de lo que pediste.
+            Estado en tiempo real de lo que pediste en esta mesa.
           </Text>
         </View>
       </SafeAreaView>
 
       <FlatList
-        data={pedidos}
+        data={misPedidos}
         keyExtractor={(p) => p.id}
         renderItem={({ item }) => <PedidoCard pedido={item} />}
         ListEmptyComponent={
           <View style={styles.empty}>
             <Text style={styles.emptyEmoji}>🔥</Text>
             <Text style={styles.emptyText}>
-              Aún no pediste. Ve al menú de tu mesa y pide algo rico.
+              Aún no pediste en esta mesa. Volvé al menú y pedí algo rico.
             </Text>
           </View>
         }
@@ -56,13 +64,13 @@ export default function PedidosScreen() {
       />
 
       <View style={styles.footer}>
-        {lastMesa !== null ? (
+        {mesaNum !== null ? (
           <Pressable
             style={styles.primaryButton}
-            onPress={() => router.push(`/mesa/${lastMesa}`)}
+            onPress={() => router.push(`/mesa/${mesaNum}`)}
           >
             <Text style={styles.primaryButtonLabel}>
-              🍽️ Ver el menú de nuevo (Mesa {lastMesa})
+              🍽️ Ver el menú de nuevo (Mesa {mesaNum})
             </Text>
           </Pressable>
         ) : (
@@ -70,7 +78,7 @@ export default function PedidosScreen() {
             <Text style={styles.primaryButtonLabel}>🍽️ Ver el menú</Text>
           </Pressable>
         )}
-        {pedidos.length > 0 && (
+        {misPedidos.length > 0 && (
           <Pressable style={styles.secondaryButton} onPress={() => router.push("/resena")}>
             <Text style={styles.secondaryButtonLabel}>⭐ Dejar una reseña</Text>
           </Pressable>

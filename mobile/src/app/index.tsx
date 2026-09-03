@@ -10,7 +10,10 @@ import { RESTAURANT } from "@/data/menu";
 export default function HomeScreen() {
   const router = useRouter();
   const { mesas } = useMesas();
-  const { pedidos } = useOrders();
+  const { pedidos, lastMesa } = useOrders();
+  const misPedidos = lastMesa !== null
+    ? pedidos.filter((p) => p.mesa === lastMesa)
+    : [];
 
   return (
     <View style={styles.container}>
@@ -22,10 +25,10 @@ export default function HomeScreen() {
           mesa. Es rápido: pedís en segundos.
         </Text>
 
-        {pedidos.length > 0 && (
+        {misPedidos.length > 0 && (
           <Pressable style={styles.ordersBar} onPress={() => router.push("/pedidos")}>
             <Text style={styles.ordersBarText}>
-              🧾 Ver mi pedido ({pedidos.length}) →
+              🧾 Ver mi pedido ({misPedidos.length}) →
             </Text>
           </Pressable>
         )}

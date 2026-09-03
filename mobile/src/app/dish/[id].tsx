@@ -39,11 +39,13 @@ export default function DishScreen() {
       <SafeAreaView style={styles.modal}>
         <View style={styles.handleBar} />
         {dishImages[dish.id] ? (
-          <Image
-            source={dishImages[dish.id]}
-            style={styles.heroPhoto}
-            resizeMode="cover"
-          />
+          <View style={styles.heroPhotoWrap}>
+            <Image
+              source={dishImages[dish.id]}
+              style={styles.heroPhoto}
+              resizeMode="cover"
+            />
+          </View>
         ) : (
           <View style={styles.hero}>
             <Text style={styles.heroEmoji}>{dish.emoji}</Text>
@@ -130,11 +132,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: Spacing.xxl,
   },
-  heroPhoto: {
+  heroPhotoWrap: {
     margin: Spacing.l,
     height: 260,
     borderRadius: Radius.l,
+    overflow: "hidden",
     backgroundColor: Colors.surfaceAlt,
+  },
+  heroPhoto: {
+    width: "100%",
+    height: "100%",
   },
   heroEmoji: {
     fontSize: 72,

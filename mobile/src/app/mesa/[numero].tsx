@@ -32,6 +32,8 @@ export default function MesaScreen() {
   const { createPedido, pedidos } = useOrders();
   const [active, setActive] = useState<string>("all");
   const [query, setQuery] = useState("");
+  const mesaNum = Number(numero);
+  const misPedidos = pedidos.filter((p) => p.mesa === mesaNum);
 
   const sections = useMemo<SectionData[]>(() => {
     const q = query.trim().toLowerCase();
@@ -52,9 +54,9 @@ export default function MesaScreen() {
 
   const submitOrder = () => {
     if (items.length === 0) return;
-    createPedido(Number(numero), items);
+    createPedido(mesaNum, items);
     clear();
-    router.replace("/pedidos");
+    router.replace(`/pedidos?mesa=${mesaNum}`);
   };
 
   return (
@@ -72,13 +74,13 @@ export default function MesaScreen() {
           <Text style={styles.title}>🍽️ Mesa {numero}</Text>
         </View>
         <View style={{ flex: 1 }} />
-        {pedidos.length > 0 && (
+        {misPedidos.length > 0 && (
           <Pressable
             style={styles.myOrderButton}
-            onPress={() => router.push("/pedidos")}
+            onPress={() => router.push(`/pedidos?mesa=${mesaNum}`)}
             hitSlop={8}
           >
-            <Text style={styles.myOrderLabel}>🧾 {pedidos.length}</Text>
+            <Text style={styles.myOrderLabel}>🧾 {misPedidos.length}</Text>
           </Pressable>
         )}
       </SafeAreaView>
