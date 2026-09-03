@@ -96,6 +96,9 @@ const demo: AdminData = {
     { id: "ll-1", mesa: 2, tipo: "mesero", estado: "nuevo", createdAt: Date.now() - 600000 },
   ],
   pagos: [],
+  asignaciones: [
+    { id: "as-2", mesa: 2, mesero: "Brayan", estado: "asignada", createdAt: Date.now() - 3600000 },
+  ],
 };
 
 export function loadData(): AdminData {

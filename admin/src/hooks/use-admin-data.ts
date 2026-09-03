@@ -9,6 +9,7 @@ import { AdminData, Pedido } from "@/lib/types";
 const allTables = [
   "categories", "dishes", "mesas", "orders", "resenas",
   "items", "movimientos", "recipes", "gastos", "llamadas", "pagos",
+  "asignaciones",
 ] as const;
 
 const columnMaps: Record<string, Record<string, string>> = {
@@ -26,6 +27,7 @@ const columnMaps: Record<string, Record<string, string>> = {
   gastos: { concepto: "concepto", monto: "monto", categoria: "categoria", createdAt: "created_at" },
   llamadas: { mesa: "mesa", tipo: "tipo", estado: "estado", createdAt: "created_at" },
   pagos: { pedidoId: "pedido_id", mesa: "mesa", metodo: "metodo", monto: "monto", propina: "propina", cajero: "cajero", createdAt: "created_at" },
+  asignaciones: { mesa: "mesa", mesero: "mesero", estado: "estado", createdAt: "created_at" },
 };
 
 async function loadFromSupabase(): Promise<AdminData | null> {
@@ -83,6 +85,7 @@ async function loadFromSupabase(): Promise<AdminData | null> {
       gastos: (results.gastos as Record<string, unknown>[]).map((r) => mapRow("gastos", r)) as AdminData["gastos"],
       llamadas: (results.llamadas as Record<string, unknown>[]).map((r) => mapRow("llamadas", r)) as AdminData["llamadas"],
       pagos: (results.pagos as Record<string, unknown>[]).map((r) => mapRow("pagos", r)) as AdminData["pagos"],
+      asignaciones: (results.asignaciones as Record<string, unknown>[]).map((r) => mapRow("asignaciones", r)) as AdminData["asignaciones"],
     };
   } catch {
     return null;
@@ -153,6 +156,13 @@ async function saveToSupabase(data: AdminData) {
       id: p.id, pedido_id: p.pedidoId, mesa: p.mesa, metodo: p.metodo,
       monto: p.monto, propina: p.propina, cajero: p.cajero,
       created_at: new Date(p.createdAt).toISOString(),
+    })),
+    { onConflict: "id" }
+  );
+  await supabase.from("asignaciones").upsert(
+    data.asignaciones.map((a) => ({
+      id: a.id, mesa: a.mesa, mesero: a.mesero, estado: a.estado,
+      created_at: new Date(a.createdAt).toISOString(),
     })),
     { onConflict: "id" }
   );

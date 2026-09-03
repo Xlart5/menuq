@@ -92,6 +92,14 @@ export type Pago = {
   createdAt: number;
 };
 
+export type Asignacion = {
+  id: string;
+  mesa: number;
+  mesero: string;
+  estado: "asignada" | "libre";
+  createdAt: number;
+};
+
 export type AdminData = {
   categories: Category[];
   dishes: Dish[];
@@ -104,4 +112,5 @@ export type AdminData = {
   gastos: Gasto[];
   llamadas: Llamada[];
   pagos: Pago[];
+  asignaciones: Asignacion[];
 };

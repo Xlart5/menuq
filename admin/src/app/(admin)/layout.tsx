@@ -28,6 +28,20 @@ export default function AdminLayout({
   const router = useRouter();
   const [active, setActive] = useState<"loading" | "out" | "in">("loading");
   const [rol, setRol] = useState<"admin" | "staff">("staff");
+  const [llamadasNuevas, setLlamadasNuevas] = useState(0);
+
+  useEffect(() => {
+    const tick = async () => {
+      const { data, error } = await supabase
+        .from("llamadas")
+        .select("id")
+        .eq("estado", "nuevo");
+      if (!error && data) setLlamadasNuevas(data.length);
+    };
+    tick();
+    const timer = setInterval(tick, 15000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +106,11 @@ export default function AdminLayout({
                 }`}
               >
                 <span>{item.emoji}</span> {item.label}
+                {item.href === "/cocina" && llamadasNuevas > 0 && (
+                  <span className="ml-auto rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-black text-white">
+                    {llamadasNuevas}
+                  </span>
+                )}
                 {item.adminOnly && rol === "admin" && (
                   <span className="ml-auto rounded-full bg-white/10 px-1.5 py-0.5 text-[10px]">
                     admin

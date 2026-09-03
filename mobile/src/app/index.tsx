@@ -33,10 +33,16 @@ export default function HomeScreen() {
           </Pressable>
         )}
 
+        <Pressable style={styles.personalButton} onPress={() => router.push("/personal")}>
+          <Text style={styles.personalButtonLabel}>
+            🧑‍🍳 Acceso del personal (mesero)
+          </Text>
+        </Pressable>
+
         <View style={styles.demoBox}>
-          <Text style={styles.demoTitle}>👨‍🍳 Acceso del personal</Text>
+          <Text style={styles.demoTitle}>🧪 Pruebas del equipo</Text>
           <Text style={styles.demoText}>
-            Selecciona una mesa para abrir el flujo de pedido del cliente
+            Abrir el menú de una mesa sin escanear QR
           </Text>
           <FlatList
             data={mesas}
@@ -96,6 +102,20 @@ const styles = StyleSheet.create({
   },
   ordersBarText: {
     color: "#09090b",
+    fontSize: 15,
+    fontWeight: "800",
+  },
+  personalButton: {
+    marginTop: Spacing.m,
+    backgroundColor: Colors.surfaceAlt,
+    borderWidth: 1,
+    borderColor: Colors.accent,
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.m + 2,
+    alignItems: "center",
+  },
+  personalButtonLabel: {
+    color: Colors.accent,
     fontSize: 15,
     fontWeight: "800",
   },

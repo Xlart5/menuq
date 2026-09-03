@@ -131,6 +131,16 @@ export default function CocinaPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-xl">🪑</span>
                     <p className="font-black text-lg">Mesa {p.mesa}</p>
+                    {(() => {
+                      const mesero = data.asignaciones.find(
+                        (a) => a.estado === "asignada" && a.mesa === p.mesa
+                      )?.mesero;
+                      return mesero ? (
+                        <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-zinc-300">
+                          🧑‍🍳 {mesero}
+                        </span>
+                      ) : null;
+                    })()}
                   </div>
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold ${m.badge}`}
