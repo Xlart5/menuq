@@ -8,6 +8,8 @@ import { formatPrice, timeAgo } from "@/lib/data";
 const estadoLabels = {
   enviado: { label: "Enviado", color: "bg-amber-500/15 text-amber-400" },
   en_preparacion: { label: "En preparación", color: "bg-sky-500/15 text-sky-400" },
+  listo: { label: "Listo", color: "bg-violet-500/15 text-violet-400" },
+  en_camino: { label: "En camino", color: "bg-pink-500/15 text-pink-400" },
   entregado: { label: "Entregado", color: "bg-green-500/15 text-green-400" },
   pagado: { label: "Pagado", color: "bg-white/10 text-zinc-200" },
 };

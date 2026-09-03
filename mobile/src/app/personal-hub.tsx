@@ -13,14 +13,18 @@ import { Colors, Radius, Spacing } from "@/constants/theme";
 import { useStaff } from "@/hooks/use-staff";
 import {
   asignarMesa,
+  cambiarMesa,
   fetchStaffData,
   liberarMesa,
+  updateOrderEstado,
 } from "@/lib/staff-api";
 import { formatPrice } from "@/data/menu";
 
 const estadoLabel: Record<string, string> = {
   enviado: "Nuevo",
   en_preparacion: "Cocinando",
+  listo: "¡Listo para recoger!",
+  en_camino: "En camino",
   entregado: "Entregado",
   pagado: "Pagado",
 };
@@ -29,8 +33,9 @@ export default function PersonalHubScreen() {
   const router = useRouter();
   const { staff, setStaff } = useStaff();
   const [data, setData] = useState<Awaited<ReturnType<typeof fetchStaffData>> | null>(null);
-  const [tab, setTab] = useState<"mesas" | "pedidos" | "propinas">("mesas");
+  const [tab, setTab] = useState<"mesas" | "pedidos" | "despacho" | "propinas">("mesas");
   const [msg, setMsg] = useState("");
+  const [cambio, setCambio] = useState<{ orderId: string; oldMesa: number } | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -93,6 +98,30 @@ export default function PersonalHubScreen() {
     fetchStaffData().then(setData).catch(() => {});
   };
 
+  const marcarEstado = async (id: string, estado: string) => {
+    const ok = await updateOrderEstado(id, estado);
+    setMsg(ok ? "Estado actualizado ✔" : "No se pudo actualizar.");
+    setTimeout(() => setMsg(""), 3000);
+    fetchStaffData().then(setData).catch(() => {});
+  };
+
+  const confirmarCambio = async (newMesa: number) => {
+    if (!cambio) return;
+    const ok = await cambiarMesa(cambio.orderId, cambio.oldMesa, newMesa, nombre);
+    setMsg(
+      ok
+        ? `Pedido movido a la Mesa ${newMesa} ✔`
+        : "No se pudo mover. Intentá de nuevo."
+    );
+    setTimeout(() => setMsg(""), 4000);
+    setCambio(null);
+    fetchStaffData().then(setData).catch(() => {});
+  };
+
+  const despacho = pedidosMios.filter(
+    (o) => o.estado === "listo" || o.estado === "en_camino"
+  );
+
   return (
     <View style={styles.container}>
       <SafeAreaView edges={["top"]} style={styles.safe}>
@@ -123,6 +152,7 @@ export default function PersonalHubScreen() {
           [
             ["mesas", `🪑 Mesas (${misMesas.length})`],
             ["pedidos", `🧾 Pedidos (${pedidosMios.length})`],
+            ["despacho", `🏃 Despacho (${despacho.length})`],
             ["propinas", "💰 Propinas"],
           ] as const
         ).map(([id, label]) => (
@@ -214,17 +244,69 @@ export default function PersonalHubScreen() {
                           ? Colors.success
                           : o.estado === "en_preparacion"
                             ? "#38bdf8"
-                            : Colors.accent,
+                            : o.estado === "listo"
+                              ? "#a78bfa"
+                              : Colors.accent,
                     },
                   ]}
                 >
                   {estadoLabel[o.estado] ?? o.estado}
                 </Text>
+                {o.estado !== "pagado" && o.estado !== "entregado" && (
+                  <Pressable
+                    style={styles.actionButton}
+                    onPress={() =>
+                      setCambio({ orderId: o.id, oldMesa: o.mesa })
+                    }
+                  >
+                    <Text style={styles.actionLabel}>🔄 Cambiar de mesa</Text>
+                  </Pressable>
+                )}
               </View>
             ))}
             {pedidosMios.length === 0 && (
               <Text style={styles.emptyText}>
                 Sin pedidos en tus mesas por ahora.
+              </Text>
+            )}
+          </>
+        )}
+
+        {tab === "despacho" && (
+          <>
+            {despacho.map((o) => (
+              <View key={o.id} style={styles.orderCard}>
+                <View style={styles.orderHeader}>
+                  <Text style={styles.orderId}>
+                    🔔 Mesa {o.mesa} · {o.id}
+                  </Text>
+                  <Text style={styles.orderTotal}>{formatPrice(o.total)}</Text>
+                </View>
+                <Text style={styles.orderEstado}>
+                  {estadoLabel[o.estado] ?? o.estado} —{" "}
+                  {o.items.reduce((s, i) => s + i.qty, 0)} artículo(s)
+                </Text>
+                <Pressable
+                  style={styles.actionButton}
+                  onPress={() =>
+                    marcarEstado(
+                      o.id,
+                      o.estado === "listo" ? "en_camino" : "entregado"
+                    )
+                  }
+                >
+                  <Text style={styles.actionLabel}>
+                    {o.estado === "listo"
+                      ? "🏃 Voy en camino"
+                      : "✅ Entregado a la mesa"}
+                  </Text>
+                </Pressable>
+              </View>
+            ))}
+            {despacho.length === 0 && (
+              <Text style={styles.emptyText}>
+                Cuando cocina marque un pedido listo, lo verás acá para
+                recogerlo.
               </Text>
             )}
           </>
@@ -251,6 +333,43 @@ export default function PersonalHubScreen() {
           </>
         )}
       </ScrollView>
+
+      {cambio && (
+        <View style={styles.changeOverlay}>
+          <View style={styles.changeCard}>
+            <Text style={styles.changeTitle}>
+              Mover pedido a otra mesa
+            </Text>
+            <Text style={styles.changeSub}>
+              El cliente cambió: todo el pedido se mueve con él.
+            </Text>
+            <View style={styles.grid}>
+              {numerosLibres.map((n) => (
+                <Pressable
+                  key={n}
+                  style={styles.mesaCard}
+                  onPress={() => confirmarCambio(n)}
+                >
+                  <Text style={styles.mesaEmoji}>🪑</Text>
+                  <Text style={styles.mesaNumero}>Mesa {n}</Text>
+                  <Text style={styles.mesaAction}>Elegir</Text>
+                </Pressable>
+              ))}
+            </View>
+            {numerosLibres.length === 0 && (
+              <Text style={styles.emptyText}>
+                No hay mesas libres para moverlo.
+              </Text>
+            )}
+            <Pressable
+              style={styles.logoutButton}
+              onPress={() => setCambio(null)}
+            >
+              <Text style={styles.logoutLabel}>Cancelar</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -419,5 +538,46 @@ const styles = StyleSheet.create({
   orderEstado: {
     fontSize: 12,
     fontWeight: "800",
+  },
+  actionButton: {
+    backgroundColor: Colors.accentSoft,
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.m - 2,
+    alignItems: "center",
+  },
+  actionLabel: {
+    color: Colors.accent,
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  changeOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    backgroundColor: "rgba(0,0,0,0.75)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: Spacing.l,
+  },
+  changeCard: {
+    width: "100%",
+    maxWidth: 420,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.l,
+    padding: Spacing.xl,
+    gap: Spacing.l,
+  },
+  changeTitle: {
+    color: Colors.text,
+    fontSize: 18,
+    fontWeight: "900",
+  },
+  changeSub: {
+    color: Colors.textMuted,
+    fontSize: 13,
   },
 });

@@ -12,13 +12,17 @@ const estadoMeta: Record<PedidoEstado, { label: string; badge: string }> = {
     label: "En preparación",
     badge: "bg-sky-500/15 text-sky-400",
   },
+  listo: { label: "Listo", badge: "bg-violet-500/15 text-violet-400" },
+  en_camino: { label: "En camino", badge: "bg-pink-500/15 text-pink-400" },
   entregado: { label: "Entregado", badge: "bg-green-500/15 text-green-400" },
   pagado: { label: "Pagado", badge: "bg-white/10 text-zinc-200" },
 };
 
 const nextEstado: Record<PedidoEstado, PedidoEstado> = {
   enviado: "en_preparacion",
-  en_preparacion: "entregado",
+  en_preparacion: "listo",
+  listo: "en_camino",
+  en_camino: "entregado",
   entregado: "entregado",
   pagado: "pagado",
 };

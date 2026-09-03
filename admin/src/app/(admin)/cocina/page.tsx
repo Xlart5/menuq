@@ -12,15 +12,31 @@ const meta: Record<PedidoEstado, { label: string; badge: string }> = {
     label: "Cocinando",
     badge: "bg-sky-500/15 text-sky-400",
   },
+  listo: { label: "Listo · despacho", badge: "bg-violet-500/15 text-violet-400" },
+  en_camino: {
+    label: "En camino (mesero)",
+    badge: "bg-pink-500/15 text-pink-400",
+  },
   entregado: { label: "Entregado", badge: "bg-green-500/15 text-green-400" },
   pagado: { label: "Pagado", badge: "bg-white/10 text-zinc-200" },
 };
 
 const next: Record<PedidoEstado, PedidoEstado> = {
   enviado: "en_preparacion",
-  en_preparacion: "entregado",
+  en_preparacion: "listo",
+  listo: "en_camino",
+  en_camino: "entregado",
   entregado: "entregado",
   pagado: "pagado",
+};
+
+const buttonLabel: Record<PedidoEstado, string> = {
+  enviado: "🔥 A cocinar",
+  en_preparacion: "✅ Pedido listo",
+  listo: "🏃 En camino",
+  en_camino: "✅ Entregado",
+  entregado: "",
+  pagado: "",
 };
 
 export default function CocinaPage() {
@@ -168,12 +184,12 @@ export default function CocinaPage() {
                 </div>
                 <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-3">
                   <span className="font-black">{formatPrice(p.total)}</span>
-                  {p.estado !== "entregado" && (
+                  {p.estado !== "entregado" && p.estado !== "pagado" && (
                     <button
                       onClick={() => advance(p.id)}
                       className="rounded-full bg-amber-500 px-4 py-2 text-sm font-bold text-zinc-950 hover:bg-amber-400"
                     >
-                      {p.estado === "enviado" ? "🔥 A cocinar" : "✅ Servido"}
+                      {buttonLabel[p.estado]}
                     </button>
                   )}
                 </div>

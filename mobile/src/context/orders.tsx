@@ -10,7 +10,12 @@ import {
 import { Dish } from "@/data/menu";
 import { supabase } from "@/lib/supabase";
 
-export type PedidoEstado = "enviado" | "en_preparacion" | "entregado";
+export type PedidoEstado =
+  | "enviado"
+  | "en_preparacion"
+  | "listo"
+  | "en_camino"
+  | "entregado";
 
 export type PedidoItem = {
   dishId: string;
@@ -68,11 +73,10 @@ export function OrdersProvider({ children }: { children: React.ReactNode }) {
       .limit(30);
     if (error || !data) return;
     const remote = data
-      .filter(
-        (o) =>
-          o.estado === "enviado" ||
-          o.estado === "en_preparacion" ||
-          o.estado === "entregado"
+      .filter((o) =>
+        (["enviado", "en_preparacion", "listo", "en_camino", "entregado"] as string[]).includes(
+          o.estado
+        )
       )
       .map(mapRow);
     setPedidos((prev) => {

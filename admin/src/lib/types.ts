@@ -20,7 +20,13 @@ export type Mesa = {
   numero: number;
 };
 
-export type PedidoEstado = "enviado" | "en_preparacion" | "entregado" | "pagado";
+export type PedidoEstado =
+  | "enviado"
+  | "en_preparacion"
+  | "listo"
+  | "en_camino"
+  | "entregado"
+  | "pagado";
 
 export type Pedido = {
   id: string;

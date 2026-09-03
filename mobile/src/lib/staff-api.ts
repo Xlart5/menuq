@@ -87,3 +87,34 @@ export async function liberarMesa(mesa: number) {
     });
   return !error;
 }
+
+export async function updateOrderEstado(id: string, estado: string) {
+  const { error } = await supabase
+    .from("orders")
+    .update({ estado })
+    .eq("id", id);
+  return !error;
+}
+
+export async function cambiarMesa(
+  orderId: string,
+  oldMesa: number,
+  newMesa: number,
+  mesero: string
+) {
+  const { error: orderErr } = await supabase
+    .from("orders")
+    .update({ mesa: newMesa })
+    .eq("id", orderId);
+  if (orderErr) return false;
+  await asignarMesa(newMesa, mesero);
+  const { data } = await supabase
+    .from("orders")
+    .select("id")
+    .eq("mesa", oldMesa)
+    .not("estado", "eq", "pagado");
+  if (!data || data.length === 0) {
+    await liberarMesa(oldMesa);
+  }
+  return true;
+}

@@ -12,6 +12,8 @@ const estadoMeta: Record<
 > = {
   enviado: { label: "Enviado a la parrilla 🔥", color: Colors.accent, emoji: "📝" },
   en_preparacion: { label: "Se está cocinando 👨‍🍳", color: "#38bdf8", emoji: "🔥" },
+  listo: { label: "¡Listo! Lo trae el mesero 🧑‍🍳", color: "#a78bfa", emoji: "🔔" },
+  en_camino: { label: "En camino a tu mesa 🏃", color: "#f472b6", emoji: "🛎️" },
   entregado: { label: "Entregado a tu mesa 🎉", color: Colors.success, emoji: "🎉" },
 };
 
