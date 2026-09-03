@@ -1,15 +1,13 @@
 import { useRouter } from "expo-router";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors, Radius, Spacing } from "@/constants/theme";
-import { useMesas } from "@/context/mesas";
 import { useOrders } from "@/context/orders";
 import { RESTAURANT } from "@/data/menu";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { mesas } = useMesas();
   const { pedidos, lastMesa } = useOrders();
   const misPedidos = lastMesa !== null
     ? pedidos.filter((p) => p.mesa === lastMesa)
@@ -21,8 +19,8 @@ export default function HomeScreen() {
         <Text style={styles.badge}>{RESTAURANT.badge}</Text>
         <Text style={styles.title}>{RESTAURANT.name}</Text>
         <Text style={styles.subtitle}>
-          Para ver el menú de tu mesa, escanea el código QR que está sobre la
-          mesa. Es rápido: pedís en segundos.
+          Para ver el menú y pedir, escaneá el código QR que está sobre tu
+          mesa.
         </Text>
 
         {misPedidos.length > 0 && (
@@ -33,33 +31,19 @@ export default function HomeScreen() {
           </Pressable>
         )}
 
+        <View style={styles.helper}>
+          <Text style={styles.helperEmoji}>🪑</Text>
+          <Text style={styles.helperText}>
+            1. Escaneá el QR de tu mesa{"\n"}2. Elegí tus platos{"\n"}3.
+            Pedí desde el celular
+          </Text>
+        </View>
+
         <Pressable style={styles.personalButton} onPress={() => router.push("/personal")}>
           <Text style={styles.personalButtonLabel}>
             🧑‍🍳 Acceso del personal (mesero)
           </Text>
         </Pressable>
-
-        <View style={styles.demoBox}>
-          <Text style={styles.demoTitle}>🧪 Pruebas del equipo</Text>
-          <Text style={styles.demoText}>
-            Abrir el menú de una mesa sin escanear QR
-          </Text>
-          <FlatList
-            data={mesas}
-            numColumns={2}
-            keyExtractor={(m) => String(m.numero)}
-            columnWrapperStyle={styles.demoRow}
-            scrollEnabled={false}
-            renderItem={({ item }) => (
-              <Pressable
-                style={styles.demoButton}
-                onPress={() => router.push(`/mesa/${item.numero}`)}
-              >
-                <Text style={styles.demoButtonLabel}>🪑 Mesa {item.numero}</Text>
-              </Pressable>
-            )}
-          />
-        </View>
       </SafeAreaView>
     </View>
   );
@@ -105,8 +89,27 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "800",
   },
+  helper: {
+    marginTop: Spacing.xl,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.m,
+    padding: Spacing.l,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.m,
+  },
+  helperEmoji: {
+    fontSize: 34,
+  },
+  helperText: {
+    color: Colors.textMuted,
+    fontSize: 14,
+    lineHeight: 22,
+  },
   personalButton: {
-    marginTop: Spacing.m,
+    marginTop: Spacing.xl,
     backgroundColor: Colors.surfaceAlt,
     borderWidth: 1,
     borderColor: Colors.accent,
@@ -117,41 +120,6 @@ const styles = StyleSheet.create({
   personalButtonLabel: {
     color: Colors.accent,
     fontSize: 15,
-    fontWeight: "800",
-  },
-  demoBox: {
-    marginTop: Spacing.xl,
-    backgroundColor: Colors.surface,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: Radius.m,
-    padding: Spacing.l,
-  },
-  demoTitle: {
-    color: Colors.text,
-    fontSize: 15,
-    fontWeight: "800",
-  },
-  demoText: {
-    color: Colors.textMuted,
-    fontSize: 12,
-    marginTop: 2,
-    marginBottom: Spacing.m,
-  },
-  demoRow: {
-    gap: Spacing.m,
-    marginBottom: Spacing.m,
-  },
-  demoButton: {
-    flex: 1,
-    backgroundColor: Colors.surfaceAlt,
-    borderRadius: Radius.m,
-    paddingVertical: Spacing.l,
-    alignItems: "center",
-  },
-  demoButtonLabel: {
-    color: Colors.accent,
-    fontSize: 14,
     fontWeight: "800",
   },
 });

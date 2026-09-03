@@ -147,6 +147,15 @@ export default function PersonalHubScreen() {
         </Pressable>
       </SafeAreaView>
 
+      <Pressable
+        style={styles.menuConsultaButton}
+        onPress={() => router.push("/menu-general")}
+      >
+        <Text style={styles.menuConsultaLabel}>
+          📖 Menú general (consulta precios)
+        </Text>
+      </Pressable>
+
       <View style={styles.tabs}>
         {(
           [
@@ -423,6 +432,21 @@ const styles = StyleSheet.create({
   logoutLabel: {
     color: Colors.textMuted,
     fontSize: 12,
+    fontWeight: "700",
+  },
+  menuConsultaButton: {
+    marginHorizontal: Spacing.l,
+    marginBottom: Spacing.m,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.m - 2,
+    alignItems: "center",
+  },
+  menuConsultaLabel: {
+    color: Colors.text,
+    fontSize: 13,
     fontWeight: "700",
   },
   tabs: {

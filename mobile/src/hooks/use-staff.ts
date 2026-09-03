@@ -16,7 +16,12 @@ export function useStaff() {
     () => null
   );
 
-  const staff: Staff | null = raw ? (JSON.parse(raw) as Staff) : null;
+  let staff: Staff | null = null;
+  try {
+    staff = raw ? (JSON.parse(raw) as Staff) : null;
+  } catch {
+    staff = null;
+  }
 
   const setStaff = (value: Staff | null) => {
     if (value) {
