@@ -81,7 +81,9 @@ export default function DescargasPage() {
             (tarda 10-15 min y el enlace de descarga aparece al terminar).
           </li>
           <li>
-            Pegá ese enlace arriba → el QR queda listo para tus meseros. 🎉
+            En la página del build: clic en <b>Descargar APK</b> → clic derecho
+            → <b>«copiar dirección de enlace»</b>. Pegá ese enlace arriba →
+            el QR queda listo para tus meseros. 🎉
           </li>
         </ol>
         <p className="mt-3 text-xs text-zinc-500">

@@ -1,18 +1,21 @@
 import { useSyncExternalStore } from "react";
 
+import {
+  storageGet,
+  storageNotify,
+  storageRemove,
+  storageSet,
+  storageSubscribe,
+} from "@/lib/safe-storage";
+
 export type Staff = {
   nombre: string;
 };
 
-function subscribe(cb: () => void) {
-  window.addEventListener("storage", cb);
-  return () => window.removeEventListener("storage", cb);
-}
-
 export function useStaff() {
   const raw = useSyncExternalStore(
-    subscribe,
-    () => localStorage.getItem("menuq-staff"),
+    storageSubscribe,
+    () => storageGet("menuq-staff"),
     () => null
   );
 
@@ -25,11 +28,11 @@ export function useStaff() {
 
   const setStaff = (value: Staff | null) => {
     if (value) {
-      localStorage.setItem("menuq-staff", JSON.stringify(value));
+      storageSet("menuq-staff", JSON.stringify(value));
     } else {
-      localStorage.removeItem("menuq-staff");
+      storageRemove("menuq-staff");
     }
-    window.dispatchEvent(new Event("storage"));
+    storageNotify();
   };
 
   return { staff, setStaff };
