@@ -73,3 +73,5 @@ Login demo: cualquier correo/contraseña. Ahí puedes:
 - **Next.js 16 + React** (landing y panel admin)
 - **Expo (React Native) + expo-router** (app móvil, corre en Android/iOS/Web)
 - **Supabase** (PostgreSQL) opcional — gratis para desarrollo y demo
+
+> Auto-deploy conectado: cada \git push\ publica las 3 apps automaticamente.
