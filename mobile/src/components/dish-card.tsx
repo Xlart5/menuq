@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Colors, Radius, Spacing } from "@/constants/theme";
 import { Dish, formatPrice } from "@/data/menu";
+import { dishImages } from "@/data/dish-images";
 
 type Props = {
   dish: Dish;
@@ -11,11 +12,16 @@ type Props = {
 };
 
 export function DishCard({ dish, onPlus, onPress, qty = 0 }: Props) {
+  const photo = dishImages[dish.id];
   return (
     <Pressable onPress={onPress} style={styles.card}>
-      <View style={styles.emojiBox}>
-        <Text style={styles.emoji}>{dish.emoji}</Text>
-      </View>
+      {photo ? (
+        <Image source={photo} style={styles.photo} resizeMode="cover" />
+      ) : (
+        <View style={styles.emojiBox}>
+          <Text style={styles.emoji}>{dish.emoji}</Text>
+        </View>
+      )}
       <View style={styles.info}>
         <View style={styles.nameRow}>
           <Text style={styles.name} numberOfLines={1}>
@@ -60,6 +66,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.accentSoft,
     alignItems: "center",
     justifyContent: "center",
+  },
+  photo: {
+    width: 64,
+    height: 64,
+    borderRadius: Radius.m,
+    backgroundColor: Colors.surfaceAlt,
   },
   emoji: {
     fontSize: 30,

@@ -1,11 +1,19 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Colors, Radius, Spacing } from "@/constants/theme";
 import { useCart } from "@/context/cart";
 import { getCategory, getDish, formatPrice } from "@/data/menu";
+import { dishImages } from "@/data/dish-images";
 
 export default function DishScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -30,9 +38,17 @@ export default function DishScreen() {
     <View style={styles.container}>
       <SafeAreaView style={styles.modal}>
         <View style={styles.handleBar} />
-        <View style={styles.hero}>
-          <Text style={styles.heroEmoji}>{dish.emoji}</Text>
-        </View>
+        {dishImages[dish.id] ? (
+          <Image
+            source={dishImages[dish.id]}
+            style={styles.heroPhoto}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={styles.hero}>
+            <Text style={styles.heroEmoji}>{dish.emoji}</Text>
+          </View>
+        )}
 
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.titleRow}>
@@ -113,6 +129,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: Spacing.xxl,
+  },
+  heroPhoto: {
+    margin: Spacing.l,
+    height: 260,
+    borderRadius: Radius.l,
+    backgroundColor: Colors.surfaceAlt,
   },
   heroEmoji: {
     fontSize: 72,

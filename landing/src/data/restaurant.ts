@@ -150,13 +150,25 @@ export const formatPrice = (value: number) => `$${value.toFixed(2)}`;
 
 export const featuredDishes = dishes.filter((d) => d.popular).slice(0, 6);
 
+export const dishPhotos: Record<string, string> = {
+  asado: "/images/asado.jpg",
+  bife: "/images/bife.jpg",
+  cheesecake: "/images/cheesecake.jpg",
+  chorizo: "/images/chorizo.jpg",
+  lomo: "/images/lomo.jpg",
+  ojo: "/images/ojo.jpg",
+  provoleta: "/images/provoleta.jpg",
+  torta: "/images/torta.jpg",
+  vino: "/images/vino.jpg",
+};
+
 export const gallery = [
-  { emoji: "🔥", label: "Parrilla a carbón de quebracho" },
-  { emoji: "🥩", label: "Cortes madurados 21 días" },
-  { emoji: "🍷", label: "Carta de vinos premium" },
-  { emoji: "🧀", label: "Provoletas al fuego" },
-  { emoji: "🍖", label: "Asado de tira 12 horas" },
-  { emoji: "✨", label: "Salón principal & privados" },
+  { src: "/images/galeria-interior.jpg", label: "Salón principal" },
+  { src: "/images/galeria-parrillero.jpg", label: "Nuestro fuego" },
+  { src: "/images/galeria-cubierta.jpg", label: "Detalles premium" },
+  { src: "/images/galeria-vinos.jpg", label: "Bodega de vinos" },
+  { src: "/images/galeria-privado.jpg", label: "Salón privado" },
+  { src: "/images/galeria-exterior.jpg", label: "Noches en La Estancia" },
 ];
 
 export const reviews = [

@@ -3,6 +3,7 @@ import { Menu3D } from "@/components/three/menu-3d";
 import { ReviewsLive } from "@/components/reviews-live";
 import {
   categories,
+  dishPhotos,
   featuredDishes,
   formatPrice,
   gallery,
@@ -128,11 +129,23 @@ function About() {
         </div>
         <div className="space-y-4">
           <div className="flex gap-4">
-            <div className="flex flex-1 items-center justify-center rounded-3xl bg-gradient-to-br from-amber-500/20 to-orange-600/10 p-8">
-              <span className="text-7xl">👨‍🍳</span>
+            <div className="flex-1 overflow-hidden rounded-3xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={dishPhotos.asado}
+                alt="Asado de tira"
+                className="h-56 w-full object-cover"
+                loading="lazy"
+              />
             </div>
-            <div className="flex flex-1 items-center justify-center rounded-3xl bg-gradient-to-br from-red-500/15 to-amber-600/10 p-8">
-              <span className="text-7xl">🔥</span>
+            <div className="flex-1 overflow-hidden rounded-3xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/galeria-parrillero.jpg"
+                alt="Parrillero profesional"
+                className="h-56 w-full object-cover"
+                loading="lazy"
+              />
             </div>
           </div>
           <div className="flex items-center justify-center gap-6 rounded-3xl border border-white/10 p-6">
@@ -187,9 +200,19 @@ function MenuSection() {
             key={dish.id}
             className="flex items-center gap-4 rounded-3xl border border-white/10 bg-zinc-900 p-5 transition-colors hover:border-amber-500/30"
           >
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-amber-500/15 text-3xl">
-              {dish.emoji}
-            </div>
+            {dishPhotos[dish.id] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={dishPhotos[dish.id]}
+                alt={dish.name}
+                className="h-20 w-24 shrink-0 rounded-2xl object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <div className="flex h-20 w-24 shrink-0 items-center justify-center rounded-2xl bg-amber-500/15 text-3xl">
+                {dish.emoji}
+              </div>
+            )}
             <div className="min-w-0 flex-1">
               <p className="font-bold text-white">{dish.name}</p>
               <p className="mt-1 line-clamp-2 text-sm text-zinc-400">
@@ -237,13 +260,17 @@ function Gallery() {
           {gallery.map((g) => (
             <div
               key={g.label}
-              className="group relative flex h-48 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6"
+              className="group relative flex h-52 items-center justify-center overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 to-zinc-950"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/15 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-              <span className="text-6xl transition-transform group-hover:scale-110">
-                {g.emoji}
-              </span>
-              <p className="absolute bottom-4 left-4 rounded-full bg-zinc-950/70 px-3 py-1 text-xs font-semibold text-zinc-200">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={g.src}
+                alt={g.label}
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-transparent to-transparent" />
+              <p className="absolute bottom-4 left-4 rounded-full bg-zinc-950/70 px-3 py-1 text-xs font-semibold text-zinc-200 backdrop-blur">
                 {g.label}
               </p>
             </div>
